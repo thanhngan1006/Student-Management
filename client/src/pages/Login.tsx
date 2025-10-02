@@ -8,8 +8,8 @@ import axios from "axios";
 const Login = () => {
   const navigate = useNavigate();
   const [formData, setFormData] = useState({
-    username: "",
-    password: "",
+    username: "52200066",
+    password: "52200066",
   });
   const [error, setError] = useState("");
   const [isShowPassword, setIsShowPassword] = useState(false);
