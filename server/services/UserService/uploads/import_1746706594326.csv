@@ -1,0 +1,12 @@
+email,address,name,role,tdt_id,username,password,gender,phone_number,date_of_birth
+tranhoanglong@tdtu.edu.vn,Huế,Trần Hoàng Long,advisor,300001,longgv,long123,male,0393322110,1994-02-18
+ngothimy@tdtu.edu.vn,Bạc Liêu,Ngô Thị Mỹ,advisor,300002,mygv,my123,female,0382211009,1992-06-09
+phamhuuan@tdtu.edu.vn,Quảng Ngãi,Phạm Hữu Ân,advisor,300003,anguv,an123,male,0371100223,1990-05-30
+dangthikieu@tdtu.edu.vn,Kon Tum,Đặng Thị Kiều,advisor,300004,kieugv,kieu123,female,0369988775,1993-09-17
+lemanhhung@tdtu.edu.vn,Gia Lai,Lê Mạnh Hùng,advisor,300005,hunggv,hung123,male,0358877664,1996-11-03
+tranthiminh@tdtu.edu.vn,Bình Phước,Trần Thị Minh,advisor,300006,minhgv,minh123,female,0347766554,1995-12-19
+nguyenhongson@tdtu.edu.vn,Thái Bình,Nguyễn Hồng Sơn,advisor,300007,songv,son123,male,0336655443,1994-07-22
+phamthikieu@tdtu.edu.vn,Hà Nam,Phạm Thị Kiều,advisor,300008,kieupgv,kieu456,female,0325544332,1993-04-08
+lephuongnam@tdtu.edu.vn,Long An,Lê Phương Nam,advisor,300009,namphgv,nam456,male,0314433221,1991-01-15
+doquanghuy@tdtu.edu.vn,Tiền Giang,Đỗ Quang Huy,advisor,300010,huygv,huy123,male,0303322110,1992-03-25
+ngothanhtam@tdtu.edu.vn,Sóc Trăng,Ngô Thanh Tâm,advisor,300011,tamgv,tam123,female,0292211098,1995-08-11

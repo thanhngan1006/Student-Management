@@ -1,0 +1,12 @@
+email,address,name,role,tdt_id,username,password,gender,phone_number,date_of_birth
+lethithuy@tdtu.edu.vn,Hà Nội,Lê Thị Thúy,advisor,200001,thuygv,thuy123,female,0390011223,1994-06-15
+phamducthanh@tdtu.edu.vn,Hải Phòng,Phạm Đức Thành,advisor,200002,thanhgv,thanh123,male,0389988776,1993-09-10
+dangkimyen@tdtu.edu.vn,Bình Dương,Đặng Kim Yến,advisor,200003,yengv,yen123,female,0376655443,1995-11-22
+nguyendinhkhoa@tdtu.edu.vn,Nha Trang,Nguyễn Đình Khoa,advisor,200004,khoagv,khoa123,male,0365533221,1992-08-30
+tranthanhnga@tdtu.edu.vn,Quảng Ninh,Trần Thanh Nga,advisor,200005,ngagv,nga123,female,0354411002,1996-12-05
+huynhphuongnam@tdtu.edu.vn,HCM,Huỳnh Phương Nam,advisor,200006,namgv,nam123,male,0343200899,1991-03-18
+buitranglinh@tdtu.edu.vn,Đồng Nai,Bùi Trang Linh,advisor,200007,linhgv,linh123,female,0332299888,1997-04-27
+phamthanhtrung@tdtu.edu.vn,Tây Ninh,Phạm Thanh Trung,advisor,200008,trunggv,trung123,male,0321188776,1998-10-12
+doanthithanh@tdtu.edu.vn,Hà Tĩnh,Doãn Thị Thanh,advisor,200009,thanhdgv,doan123,female,0310077665,1995-02-14
+nguyenmanhcuong@tdtu.edu.vn,Lâm Đồng,Nguyễn Mạnh Cường,advisor,200010,cuonggv,cuong123,male,0309090909,1993-07-07
+tranlehoai@tdtu.edu.vn,An Giang,Trần Lê Hoài,advisor,200011,hoaigv,hoai123,female,0298080808,1996-01-29

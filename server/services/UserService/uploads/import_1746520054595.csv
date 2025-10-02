@@ -1,0 +1,11 @@
+email,address,name,role,tdt_id,username,password,gender,phone_number,date_of_birth
+nguyenhamy@tdtu.edu.vn,HCM,Nguyễn Hà My,advisor,100001,100001,123456,female,0398765432,1996-07-20
+tranminhhuy@tdtu.edu.vn,Đà Nẵng,Trần Minh Huy,advisor,100002,100002,123456,male,0345678123,1997-07-20
+nguyenanhkiet@tdtu.edu.vn,Cần Thơ,Nguyễn Anh Kiệt,advisor,100003,100003,123456,male,0367894321,1998-07-20
+hoanghuubach@tdtu.edu.vn,Nam Từ Liêm,Hoàng Hữu Bách,advisor,100004,bachgv,bach,male,02103748902,1998-05-24
+koyomihatsune@tdtu.edu.vn,Vĩnh Phúc,Nguyễn Việt Anh,advisor,100005,vagv,va,male,02938278424,1995-07-27
+jenna@tdtu.edu.vn,Vĩnh Phúc,Trần Thị Huệ,advisor,100006,hmgv,hm,female,02938278420,1992-03-21
+nguyenthiha@tdtu.edu.vn,HCM,Nguyễn Thị Hà,advisor,100007,100001,123456,female,0398765432,1996-07-20
+tranminhduy@tdtu.edu.vn,Đà Nẵng,Trần Minh Duy,advisor,100008,100002,123456,male,0345678123,1997-07-20
+tranthiyennhi@tdtu.edu.vn,Cần Thơ,Trần Thị Yến Nhi,advisor,100009,100003,123456,male,0367894321,1998-07-20
+52200066@student.tdtu.edu.vn,Quảng Nam,Admin,admin,52200066,52200066,123456,female,0367894321,1998-07-20
