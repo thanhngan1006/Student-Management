@@ -1,0 +1,5 @@
+fastapi
+Flask
+ortools
+pymongo
+uvicorn
