@@ -355,11 +355,11 @@ interface Student {
   _id: string;
   name: string;
   tdt_id: string;
-  hk1_gpa: string | number;
+  hk1_gpa: string | number; // Cho phép cả string ("N/A") và number
   hk1_behavior: string;
-  hk2_gpa: string | number;
+  hk2_gpa: string | number; // Cho phép cả string ("N/A") và number
   hk2_behavior: string;
-  avg_gpa: string | number;
+  avg_gpa: string | number; // Cho phép cả string ("N/A") và number
 }
 
 interface ClassData {
@@ -371,6 +371,12 @@ interface ClassData {
 interface Semester {
   _id: string;
   semester_name: string;
+}
+
+interface Score {
+  semester_id: string;
+  gpa: string; // API trả về string, ví dụ: "7.5" hoặc "N/A"
+  behavior: string;
 }
 
 interface SnackbarState {
@@ -405,6 +411,8 @@ const TeacherDashboard: React.FC = () => {
   // Fetch school years
   useEffect(() => {
     const fetchSchoolYears = async () => {
+      console.log(semesterIds);
+
       setLoading(true);
       setError("");
       try {
@@ -472,10 +480,10 @@ const TeacherDashboard: React.FC = () => {
           { headers: { Authorization: `Bearer ${token}` } }
         );
         const semesters = semesterRes.data;
-        const hk1Semester = semesters.find((s) =>
+        const hk1Semester = semesters.find((s: Semester) =>
           s.semester_name.includes("HK1")
         );
-        const hk2Semester = semesters.find((s) =>
+        const hk2Semester = semesters.find((s: Semester) =>
           s.semester_name.includes("HK2")
         );
         if (!hk1Semester && !hk2Semester) {
@@ -497,7 +505,7 @@ const TeacherDashboard: React.FC = () => {
 
         // Fetch scores for each student using getStatusAndBehavior API
         const enrichedStudents = await Promise.all(
-          studentDetails.map(async (student) => {
+          studentDetails.map(async (student: Student) => {
             try {
               if (!newSemesterIds.hk1 && !newSemesterIds.hk2) {
                 return {
@@ -524,22 +532,20 @@ const TeacherDashboard: React.FC = () => {
                 };
               }
 
-              const scoresRes = await axios.get<{
-                data: { semester_id: string; gpa: string; behavior: string }[];
-              }>(
+              const scoresRes = await axios.get<{ data: Score[] }>(
                 `http://localhost:4002/api/students/status-behavior?user_id=${student._id}&semester_ids=${semesterIdsParam}`,
                 { headers: { Authorization: `Bearer ${token}` } }
               );
               const scores = scoresRes.data.data;
 
               const hk1Score = scores.find(
-                (s) => s.semester_id === newSemesterIds.hk1
+                (s: Score) => s.semester_id === newSemesterIds.hk1
               ) || {
                 gpa: "N/A",
                 behavior: "N/A",
               };
               const hk2Score = scores.find(
-                (s) => s.semester_id === newSemesterIds.hk2
+                (s: Score) => s.semester_id === newSemesterIds.hk2
               ) || {
                 gpa: "N/A",
                 behavior: "N/A",
@@ -550,11 +556,11 @@ const TeacherDashboard: React.FC = () => {
               const hk2Gpa =
                 hk2Score.gpa !== "N/A" ? parseFloat(hk2Score.gpa) : null;
               const avgGpa =
-                hk1Gpa && hk2Gpa
+                hk1Gpa !== null && hk2Gpa !== null
                   ? ((hk1Gpa + hk2Gpa) / 2).toFixed(2)
-                  : hk1Gpa
+                  : hk1Gpa !== null
                   ? hk1Gpa.toFixed(2)
-                  : hk2Gpa
+                  : hk2Gpa !== null
                   ? hk2Gpa.toFixed(2)
                   : "N/A";
 
@@ -632,11 +638,17 @@ const TeacherDashboard: React.FC = () => {
             student_id: s._id,
             name: s.name,
             hk1: {
-              gpa: s.hk1_gpa === "N/A" ? null : parseFloat(s.hk1_gpa as string),
+              gpa:
+                typeof s.hk1_gpa === "string" && s.hk1_gpa === "N/A"
+                  ? null
+                  : parseFloat(s.hk1_gpa as string) || null,
               behavior: s.hk1_behavior,
             },
             hk2: {
-              gpa: s.hk2_gpa === "N/A" ? null : parseFloat(s.hk2_gpa as string),
+              gpa:
+                typeof s.hk2_gpa === "string" && s.hk2_gpa === "N/A"
+                  ? null
+                  : parseFloat(s.hk2_gpa as string) || null,
               behavior: s.hk2_behavior,
             },
           }))
@@ -732,7 +744,7 @@ const TeacherDashboard: React.FC = () => {
           <tbody>
             {filteredStudents.length === 0 ? (
               <tr>
-                <td colSpan="8" className="py-3 px-4 text-center text-gray-500">
+                <td colSpan={8} className="py-3 px-4 text-center text-gray-500">
                   Không có học sinh nào để hiển thị.
                 </td>
               </tr>
