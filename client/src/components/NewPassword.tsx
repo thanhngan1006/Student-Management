@@ -34,10 +34,24 @@ const NewPassword = () => {
         throw new Error("Mật khẩu phải có ít nhất 6 ký tự.");
       }
 
-      const response = await axios.post("http://localhost:4003/api/auth/reset-password", {
-        token: userId,
-        newPassword,
-      });
+      const response = await axios.post(
+        "http://localhost:4003/api/auth/reset-password",
+        {
+          token: userId,
+          newPassword,
+        }
+      );
+
+      if (response.status === 200 || response.data.success) {
+        setSuccess("Mật khẩu đã được cập nhật thành công!");
+        setNewPassword(""); // Xóa trường mật khẩu
+        setConfirmPassword(""); // Xóa trường xác nhận mật khẩu
+        setTimeout(() => {
+          navigate("/login");
+        }, 3000);
+      } else {
+        throw new Error("Cập nhật mật khẩu thất bại.");
+      }
 
       setSuccess("Mật khẩu đã được cập nhật thành công!");
       setTimeout(() => {
