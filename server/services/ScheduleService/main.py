@@ -1,6 +1,7 @@
 from fastapi import FastAPI
 from pymongo import MongoClient
-from server.services.ScheduleService.schedule import generate_schedule_multi_class
+# from server.services.ScheduleService.schedule import generate_schedule_multi_class
+from schedule import generate_schedule_multi_class
 from datetime import datetime
 
 app = FastAPI()
