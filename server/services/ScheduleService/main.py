@@ -1,7 +1,8 @@
 from fastapi import FastAPI
 from pymongo import MongoClient
 # from server.services.ScheduleService.schedule import generate_schedule_multi_class
-from schedule import generate_schedule_multi_class
+# from schedule import generate_schedule_multi_class
+from schedule import generate_schedule
 from datetime import datetime
 
 app = FastAPI()
@@ -11,7 +12,8 @@ db = client["school"]
 @app.post("/generate-schedules")
 def generate():
     subjects = list(db["subjects"].find())
-    schedules = generate_schedule_multi_class(subjects)
+    # schedules = generate_schedule_multi_class(subjects)
+    schedules = generate_schedule(subjects)
 
     for class_id, schedule in schedules.items():
         db["timetables"].update_one(
