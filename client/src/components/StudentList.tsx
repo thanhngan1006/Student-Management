@@ -50,6 +50,8 @@ const StudentList = ({ students, onDelete, classId, setStudents }: Props) => {
         }
       );
 
+      console.log(res);
+
       Swal.fire({
         icon: "success",
         title: "Cập nhật thành công!",

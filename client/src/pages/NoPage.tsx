@@ -1,6 +1,4 @@
-type Props = {};
-
-const NoPage = (props: Props) => {
+const NoPage = () => {
   return <div className="text-center mt-20 text-red-600 text-xl">404</div>;
 };
 

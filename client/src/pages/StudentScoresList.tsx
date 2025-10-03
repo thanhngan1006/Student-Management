@@ -21,7 +21,9 @@ const StudentScoresList = () => {
   const [availableClasses, setAvailableClasses] = useState<any[]>([]);
   const [selectedClassId, setSelectedClassId] = useState<string>("");
   const [selectedTerm, setSelectedTerm] = useState("");
-  const [termStatusMap, setTermStatusMap] = useState<Record<string, string>>({});
+  const [termStatusMap, setTermStatusMap] = useState<Record<string, string>>(
+    {}
+  );
   const [semesters, setSemesters] = useState<any[]>([]);
 
   useEffect(() => {
@@ -151,9 +153,9 @@ const StudentScoresList = () => {
         const classRes = await axios.get("http://localhost:4000/api/classes", {
           headers: { Authorization: `Bearer ${token}` },
         });
-        const allStudentIds = classRes.data.flatMap(
-          (cls: any) => cls.class_member
-        );
+        // const allStudentIds = classRes.data.flatMap(
+        //   (cls: any) => cls.class_member
+        // );
         const allStudentsWithClassInfo = classRes.data.flatMap((cls: any) =>
           cls.class_member.map((studentId: string) => ({
             studentId,

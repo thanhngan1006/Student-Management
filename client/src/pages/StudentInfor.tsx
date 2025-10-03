@@ -32,7 +32,7 @@ const StudentInfor = () => {
   const isAdvisor = user.role === "advisor";
   const isAdmin = user.role === "admin";
 
-  const { isHomeroomTeacher, isSubjectTeacher } = useMemo(() => {
+  const { isHomeroomTeacher } = useMemo(() => {
     if (!user || user.role !== "advisor") {
       return { isHomeroomTeacher: false, isSubjectTeacher: false };
     }
@@ -45,6 +45,8 @@ const StudentInfor = () => {
   }, [user]);
 
   useEffect(() => {
+    console.log(loading);
+
     const fetchStudents = async () => {
       try {
         if (isAdvisor) {

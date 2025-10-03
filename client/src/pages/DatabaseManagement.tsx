@@ -123,7 +123,7 @@ const DatabaseManagement = () => {
   const [classId, setClassId] = useState<string>("");
   const [loading, setLoading] = useState(true);
 
-  const { isHomeroomTeacher, isSubjectTeacher } = useMemo(() => {
+  const { isHomeroomTeacher } = useMemo(() => {
     if (!user || user.role !== "advisor") {
       return { isHomeroomTeacher: false, isSubjectTeacher: false };
     }
@@ -136,6 +136,8 @@ const DatabaseManagement = () => {
   }, [user]);
 
   useEffect(() => {
+    console.log(loading);
+
     const fetchClassId = async () => {
       if (role !== "advisor") return;
       try {

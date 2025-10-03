@@ -45,10 +45,6 @@ export const ClassProvider = ({ children }: ClassProviderProps) => {
   const [advisor, setAdvisor] = useState<string | null>(null);
   const [newAdvisorEmail, setNewAdvisorEmail] = useState("");
 
-  const generateRandomID = (): string => {
-    return Math.random().toString(36).substr(2, 9);
-  };
-
   const handleClassNameChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     setStudentClass(
       (prev: ClassTypes) =>
@@ -126,6 +122,7 @@ export const ClassProvider = ({ children }: ClassProviderProps) => {
 
   useEffect(() => {
     const fetchClasses = async () => {
+      console.log(newAdvisorEmail);
       try {
         const res = await axios.get("http://localhost:4000/api/classes"); // hoặc URL tương ứng
         setClasses(res.data);

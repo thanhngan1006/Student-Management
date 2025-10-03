@@ -17,6 +17,8 @@ const StudentScoreDetail = () => {
 
   useEffect(() => {
     const fetchStudent = async () => {
+      console.log(classId);
+
       try {
         const userRes = await axios.get(
           `http://localhost:4003/api/users/tdt/${studentId}`,
@@ -36,12 +38,12 @@ const StudentScoreDetail = () => {
         setStudentInfo(userRes.data);
         setClassId(classId);
 
-        const scoreGroupedRes = await axios.get(
-          `http://localhost:4002/api/students/${userRes.data._id}/scores-by-semester`,
-          {
-            headers: { Authorization: `Bearer ${token}` },
-          }
-        );
+        // const scoreGroupedRes = await axios.get(
+        //   `http://localhost:4002/api/students/${userRes.data._id}/scores-by-semester`,
+        //   {
+        //     headers: { Authorization: `Bearer ${token}` },
+        //   }
+        // );
 
         const semesterRes = await axios.get(
           `http://localhost:4000/api/${classId}/available-semesters`,
@@ -49,10 +51,12 @@ const StudentScoreDetail = () => {
             headers: { Authorization: `Bearer ${token}` },
           }
         );
-        const formattedSemesters = semesterRes.data.semesters.map((sem: any) => ({
-          id: sem._id,
-          name: sem.semester_name,
-        }));
+        const formattedSemesters = semesterRes.data.semesters.map(
+          (sem: any) => ({
+            id: sem._id,
+            name: sem.semester_name,
+          })
+        );
         setSemesters(formattedSemesters);
 
         if (formattedSemesters.length > 0) {
@@ -108,12 +112,16 @@ const StudentScoreDetail = () => {
 
   const handleEditScore = async () => {
     const scores: Record<string, number> = {};
-  
-    if (editingSubject.score_15p !== undefined) scores["15p"] = editingSubject.score_15p;
-    if (editingSubject.score_1tiet !== undefined) scores["1tiet"] = editingSubject.score_1tiet;
-    if (editingSubject.score_giuaky !== undefined) scores["giuaky"] = editingSubject.score_giuaky;
-    if (editingSubject.score_cuoiky !== undefined) scores["cuoiky"] = editingSubject.score_cuoiky;
-  
+
+    if (editingSubject.score_15p !== undefined)
+      scores["15p"] = editingSubject.score_15p;
+    if (editingSubject.score_1tiet !== undefined)
+      scores["1tiet"] = editingSubject.score_1tiet;
+    if (editingSubject.score_giuaky !== undefined)
+      scores["giuaky"] = editingSubject.score_giuaky;
+    if (editingSubject.score_cuoiky !== undefined)
+      scores["cuoiky"] = editingSubject.score_cuoiky;
+
     if (!editingSubject.subject_id) {
       alert("Mã môn học không hợp lệ!");
       return;
@@ -131,9 +139,9 @@ const StudentScoreDetail = () => {
           headers: { Authorization: `Bearer ${token}` },
         }
       );
-  
+
       setEditingSubject(null);
-  
+
       const res = await axios.get(
         `http://localhost:4002/api/students/${studentInfo._id}/scores?semester_id=${selectedSemesterId}`,
         {
@@ -144,13 +152,11 @@ const StudentScoreDetail = () => {
       setGrades(res.data.scores);
       setStatus(res.data.status || "");
       setGpa(parseFloat(res.data.semesterGpa));
-  
+
       alert("Cập nhật điểm thành công!");
-  
     } catch (error: any) {
       console.error("Lỗi khi lưu điểm:", error);
       alert(`Lỗi: ${error.message}`);
-      
     }
   };
 
@@ -225,7 +231,7 @@ const StudentScoreDetail = () => {
                     {selectedSemesterId !== "all" && (
                       <button
                         onClick={() => {
-                          setEditingSubject(grade)
+                          setEditingSubject(grade);
                         }}
                         className="ml-2 px-2 py-1 text-xs bg-blue-400 hover:bg-blue-500 rounded text-amber-50"
                       >
@@ -247,47 +253,51 @@ const StudentScoreDetail = () => {
         </div>
       </div>
       {editingSubject && (
-            <div className="fixed inset-0 bg-black bg-opacity-30 flex justify-center items-center z-50">
-              <div className="bg-white p-6 rounded-lg w-full max-w-md shadow-lg relative">
-                <h2 className="text-xl font-bold mb-4">Chỉnh sửa điểm: {editingSubject.subject_name}</h2>
+        <div className="fixed inset-0 bg-black bg-opacity-30 flex justify-center items-center z-50">
+          <div className="bg-white p-6 rounded-lg w-full max-w-md shadow-lg relative">
+            <h2 className="text-xl font-bold mb-4">
+              Chỉnh sửa điểm: {editingSubject.subject_name}
+            </h2>
 
-                {["score_15p", "score_1tiet", "score_giuaky", "score_cuoiky"].map((key) => (
-                  <div key={key} className="mb-3">
-                    <label className="block text-sm font-medium mb-1">
-                      {key.replace("score_", "").toUpperCase()}
-                    </label>
-                    <input
-                      type="number"
-                      step="0.1"
-                      className="w-full border px-3 py-2 rounded"
-                      value={editingSubject[key] ?? ""}
-                      onChange={(e) =>
-                        setEditingSubject({
-                          ...editingSubject,
-                          [key]: parseFloat(e.target.value),
-                        })
-                      }
-                    />
-                  </div>
-                ))}
-
-                <div className="flex justify-end mt-4 gap-3">
-                  <button
-                    className="px-4 py-2 bg-gray-300 rounded"
-                    onClick={() => setEditingSubject(null)}
-                  >
-                    Hủy
-                  </button>
-                  <button
-                    className="px-4 py-2 bg-blue-500 text-white rounded"
-                    onClick={handleEditScore}
-                  >
-                    Lưu
-                  </button>
+            {["score_15p", "score_1tiet", "score_giuaky", "score_cuoiky"].map(
+              (key) => (
+                <div key={key} className="mb-3">
+                  <label className="block text-sm font-medium mb-1">
+                    {key.replace("score_", "").toUpperCase()}
+                  </label>
+                  <input
+                    type="number"
+                    step="0.1"
+                    className="w-full border px-3 py-2 rounded"
+                    value={editingSubject[key] ?? ""}
+                    onChange={(e) =>
+                      setEditingSubject({
+                        ...editingSubject,
+                        [key]: parseFloat(e.target.value),
+                      })
+                    }
+                  />
                 </div>
-              </div>
+              )
+            )}
+
+            <div className="flex justify-end mt-4 gap-3">
+              <button
+                className="px-4 py-2 bg-gray-300 rounded"
+                onClick={() => setEditingSubject(null)}
+              >
+                Hủy
+              </button>
+              <button
+                className="px-4 py-2 bg-blue-500 text-white rounded"
+                onClick={handleEditScore}
+              >
+                Lưu
+              </button>
             </div>
-          )}
+          </div>
+        </div>
+      )}
     </div>
   );
 };

@@ -31,7 +31,7 @@ const Home = () => {
 
   console.log("cac lop duoc tao ", classes);
 
-  const { isHomeroomTeacher, isSubjectTeacher } = useMemo(() => {
+  const { isHomeroomTeacher } = useMemo(() => {
     if (!userDetail || userDetail.role !== "advisor") {
       return { isHomeroomTeacher: false, isSubjectTeacher: false };
     }

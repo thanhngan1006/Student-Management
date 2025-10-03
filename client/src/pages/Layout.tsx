@@ -3,9 +3,7 @@ import Sidebar from "../components/Sidebar";
 import { ClassProvider } from "../context/ClassContext";
 import { DepartmentProvider } from "../context/DepartmentContext";
 
-type Props = {};
-
-const Layout = (props: Props) => {
+const Layout = () => {
   return (
     <ClassProvider>
       <DepartmentProvider>
