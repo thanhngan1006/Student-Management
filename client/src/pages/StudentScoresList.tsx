@@ -651,6 +651,7 @@ const StudentScoresList = () => {
               `http://localhost:4002/api/students/${student._id}/scores`,
               {
                 headers: { Authorization: `Bearer ${token}` },
+                validateStatus: (status) => status < 500, // Không coi 404 là lỗi nghiêm trọng
               }
             );
             const { gpa, status } = res.data;
@@ -664,8 +665,8 @@ const StudentScoresList = () => {
               class_id: student.class_id || classInfo?.class_id || "",
             };
           } catch (err: any) {
-            // Check if the error is a 404 (Not Found), which means no scores exist
-            if (err.response && err.response.status === 404) {
+            // Kiểm tra lỗi axios và trạng thái 404
+            if (axios.isAxiosError(err) && err.response?.status === 404) {
               const classInfo = classMapping.find(
                 (m) => m.studentId === student._id
               );
@@ -676,7 +677,7 @@ const StudentScoresList = () => {
                 status: "Chưa có",
               };
             }
-            // Log other errors (e.g., 500) but not 404
+            // Log lỗi khác (không phải 404)
             console.error(
               `Lỗi khi lấy điểm cho học sinh ${student._id}:`,
               (err as Error).message
@@ -708,7 +709,6 @@ const StudentScoresList = () => {
       setSelectedClassId(classId);
 
       if (classId === "") {
-        // Tất cả học sinh
         const classRes = await axios.get("http://localhost:4000/api/classes", {
           headers: { Authorization: `Bearer ${token}` },
         });
@@ -759,7 +759,6 @@ const StudentScoresList = () => {
         return;
       }
 
-      // Học sinh thuộc 1 lớp cụ thể
       const classRes = await axios.get(
         `http://localhost:4000/api/classes/${classId}/students`,
         {
@@ -787,12 +786,12 @@ const StudentScoresList = () => {
         {
           params: { semester_id: semesterId },
           headers: { Authorization: `Bearer ${token}` },
+          validateStatus: (status) => status < 500, // Không coi 404 là lỗi nghiêm trọng
         }
       );
       return res.data.status;
     } catch (err: any) {
-      // Handle 404 (Not Found) as "Chưa có" without logging
-      if (err.response && err.response.status === 404) {
+      if (axios.isAxiosError(err) && err.response?.status === 404) {
         return "Chưa có";
       }
       console.error("Lỗi khi lấy học lực theo kỳ:", (err as Error).message);
