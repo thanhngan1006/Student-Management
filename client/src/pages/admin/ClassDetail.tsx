@@ -5,9 +5,7 @@ import Swal from "sweetalert2";
 import { mockListStudents } from "../../data/mockListStudent";
 import { MdDelete } from "react-icons/md";
 
-type Props = {};
-
-const ClassDetail = (props: Props) => {
+const ClassDetail = () => {
   const [newAdvisorEmail, setNewAdvisorEmail] = useState("");
   const [searchTerm, setSearchTerm] = useState("");
   const [filteredStudents, setFilteredStudents] = useState(mockListStudents);
@@ -27,13 +25,15 @@ const ClassDetail = (props: Props) => {
 
   const fetchTeachers = async () => {
     try {
-      const res = await axios.get(`http://localhost:4000/api/classes/${classId}/subjects`);
+      const res = await axios.get(
+        `http://localhost:4000/api/classes/${classId}/subjects`
+      );
       setTeachers(res.data);
     } catch (error) {
       console.error("Lỗi khi lấy thông tin giáo viên:", error);
     }
   };
-  
+
   const handleAddAdvisorClick = async () => {
     if (!newAdvisorEmail) {
       Swal.fire({
@@ -127,19 +127,20 @@ const ClassDetail = (props: Props) => {
 
   const handleRemoveTeacher = async (classId: string, teacherId: string) => {
     try {
-      const token = localStorage.getItem("token");  
+      const token = localStorage.getItem("token");
       const res = await axios.put(
         "http://localhost:4000/api/classes/remove-teacher",
         {
           class_id: classId,
-          teacher_id: teacherId,  
+          teacher_id: teacherId,
         },
         {
           headers: {
-            Authorization: `Bearer ${token}`, 
+            Authorization: `Bearer ${token}`,
           },
         }
       );
+      console.log(res);
       await fetchTeachers();
       Swal.fire({
         icon: "success",
@@ -153,7 +154,7 @@ const ClassDetail = (props: Props) => {
         text: "Không thể xoá giáo viên khỏi lớp.",
       });
     }
-  };  
+  };
 
   const handleAddSubjectTeacherClick = async () => {
     if (!newSubjectTeacherEmail) {
@@ -164,15 +165,15 @@ const ClassDetail = (props: Props) => {
       });
       return;
     }
-  
+
     try {
       const token = localStorage.getItem("token");
-  
+
       // Gọi API để lấy thông tin giáo viên từ email
       const teacherRes = await axios.post(
         `http://localhost:4003/api/users/get-ids-by-emails`,
         {
-          emails: [newSubjectTeacherEmail]
+          emails: [newSubjectTeacherEmail],
         },
         {
           headers: {
@@ -180,7 +181,7 @@ const ClassDetail = (props: Props) => {
           },
         }
       );
-  
+
       const teacherId = teacherRes.data?.userIds?.[0];
       if (!teacherId) {
         Swal.fire({
@@ -190,7 +191,7 @@ const ClassDetail = (props: Props) => {
         });
         return;
       }
-  
+
       // Gọi API gán giáo viên vào lớp
       await axios.put(
         `http://localhost:4000/api/classes/add-teacher`,
@@ -204,13 +205,13 @@ const ClassDetail = (props: Props) => {
           },
         }
       );
-  
+
       Swal.fire({
         icon: "success",
         title: "Thành công",
         text: "Đã thêm giáo viên bộ môn vào lớp!",
       });
-  
+
       setNewSubjectTeaacherEmail("");
       await fetchTeachers();
     } catch (err: any) {
@@ -223,7 +224,7 @@ const ClassDetail = (props: Props) => {
           "Đã xảy ra lỗi khi thêm giáo viên bộ môn",
       });
     }
-  };  
+  };
 
   const handleSearchChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     setSearchTerm(e.target.value);
@@ -377,28 +378,34 @@ const ClassDetail = (props: Props) => {
           </div>
         )}
         <div className="mb-4 flex gap-3">
-            <input
-              type="email"
-              placeholder="Nhập email giáo viên"
-              value={newSubjectTeacherEmail}
-              onChange={(e) => setNewSubjectTeaacherEmail(e.target.value)}
-              className="border p-2 rounded-md w-2/5"
-            />
-            <button
-              className="bg-blue-900 hover:bg-blue-950 text-white px-4 py-2 rounded-md"
-              onClick={handleAddSubjectTeacherClick}
-            >
-              Thêm giáo viên bộ môn
-            </button>
+          <input
+            type="email"
+            placeholder="Nhập email giáo viên"
+            value={newSubjectTeacherEmail}
+            onChange={(e) => setNewSubjectTeaacherEmail(e.target.value)}
+            className="border p-2 rounded-md w-2/5"
+          />
+          <button
+            className="bg-blue-900 hover:bg-blue-950 text-white px-4 py-2 rounded-md"
+            onClick={handleAddSubjectTeacherClick}
+          >
+            Thêm giáo viên bộ môn
+          </button>
         </div>
 
         <table className="min-w-full border-collapse border border-gray-300 bg-white mt-5">
           <thead className="bg-gray-200">
             <tr>
-              <th className="text-base border border-gray-300 p-2">Họ và tên</th>
-              <th className="text-base border border-gray-300 p-2">Mã định danh</th>
+              <th className="text-base border border-gray-300 p-2">
+                Họ và tên
+              </th>
+              <th className="text-base border border-gray-300 p-2">
+                Mã định danh
+              </th>
               <th className="text-base border border-gray-300 p-2">Email</th>
-              <th className="text-base border border-gray-300 p-2">Số điện thoại</th>
+              <th className="text-base border border-gray-300 p-2">
+                Số điện thoại
+              </th>
               <th className="text-base border border-gray-300 p-2">Môn dạy</th>
               <th className="text-base border border-gray-300 p-2">Thao tác</th>
             </tr>
@@ -425,10 +432,12 @@ const ClassDetail = (props: Props) => {
                 </td>
                 <td className="text-center border text-sm border-gray-300 p-4">
                   <button
-                      onClick={() => handleRemoveTeacher(classInfo._id, teacher.teacher_id)}
-                      className="cursor-pointer text-red-500 text-xl hover:text-red-700"
+                    onClick={() =>
+                      handleRemoveTeacher(classInfo._id, teacher.teacher_id)
+                    }
+                    className="cursor-pointer text-red-500 text-xl hover:text-red-700"
                   >
-                  <MdDelete />
+                    <MdDelete />
                   </button>
                 </td>
               </tr>

@@ -4,54 +4,41 @@ import { MdCheck, MdClose, MdDelete } from "react-icons/md";
 import { useParams } from "react-router-dom";
 import axios from "axios";
 
-interface Class {
-  id: string;
-  name: string;
-  subject: string;
-  schedule: string;
-}
-
 const TeacherDetailInDepartment = () => {
-  const { departmentId, teacherId } = useParams();
+  const { teacherId } = useParams();
   const [teacher, setTeacher] = useState<any>(null);
   const [teacherMongoId, setTeacherMongoId] = useState<string>("");
-  const [classes, setClasses] = useState<Class[]>([
-    {
-      id: "1",
-      name: "10A1",
-      subject: "Tin học",
-      schedule: "Thứ 2 - Tiết 1,2",
-    },
-    {
-      id: "2",
-      name: "10A2",
-      subject: "Tin học",
-      schedule: "Thứ 3 - Tiết 3,4",
-    },
-  ]);
+
   const [teachingClasses, setTeachingClasses] = useState<any[]>([]);
-  const [subjects, setSubjects] = useState<{ subject_id: string; subject_code: string; subject_name: string }[]>([]);
+  const [subjects, setSubjects] = useState<
+    { subject_id: string; subject_code: string; subject_name: string }[]
+  >([]);
   const [isAddingClass, setIsAddingClass] = useState(false);
   const [newClassName, setNewClassName] = useState("");
 
   useEffect(() => {
     if (!teacherId) return;
-  
-    axios.get(`http://localhost:4003/api/users/tdt/${teacherId}`)
+
+    axios
+      .get(`http://localhost:4003/api/users/tdt/${teacherId}`)
       .then((res) => {
-        setTeacher(res.data); 
-        setTeacherMongoId(res.data._id); 
+        setTeacher(res.data);
+        setTeacherMongoId(res.data._id);
       })
       .catch((err) => console.error("Lỗi khi lấy thông tin giáo viên:", err));
-    
-    axios.get(`http://localhost:4001/api/departments/${teacherId}/subjects`)
+
+    axios
+      .get(`http://localhost:4001/api/departments/${teacherId}/subjects`)
       .then((res) => setSubjects(res.data))
       .catch((err) => console.error("Lỗi khi lấy danh sách môn:", err));
 
-    axios.get(`http://localhost:4000/api/teacher/tdt/${teacherId}`)
+    axios
+      .get(`http://localhost:4000/api/teacher/tdt/${teacherId}`)
       .then((res) => setTeachingClasses(res.data))
-      .catch((err) => console.error("Lỗi khi lấy danh sách lớp phụ trách:", err));
-  }, [teacherId]);  
+      .catch((err) =>
+        console.error("Lỗi khi lấy danh sách lớp phụ trách:", err)
+      );
+  }, [teacherId]);
 
   const handleAddClass = () => {
     setIsAddingClass(true);
@@ -63,16 +50,18 @@ const TeacherDetailInDepartment = () => {
       alert("Vui lòng nhập tên lớp!");
       return;
     }
-  
+
     try {
       await axios.put("http://localhost:4000/api/classes/add-teacher", {
         class_id: newClassName.trim(),
-        teacher_id: teacher._id, 
+        teacher_id: teacher._id,
       });
-  
-      const res = await axios.get(`http://localhost:4000/api/teacher/tdt/${teacherId}`);
+
+      const res = await axios.get(
+        `http://localhost:4000/api/teacher/tdt/${teacherId}`
+      );
       setTeachingClasses(res.data);
-  
+
       setIsAddingClass(false);
       setNewClassName("");
     } catch (error) {
@@ -98,17 +87,19 @@ const TeacherDetailInDepartment = () => {
         class_id: classId,
         teacher_id: teacherMongoId,
       });
-  
+
       // Cập nhật lại danh sách lớp sau khi xóa
-      const res = await axios.get(`http://localhost:4000/api/teacher/tdt/${teacherId}`);
+      const res = await axios.get(
+        `http://localhost:4000/api/teacher/tdt/${teacherId}`
+      );
       setTeachingClasses(res.data);
-  
+
       alert("Đã xoá giáo viên khỏi lớp thành công!");
     } catch (error) {
       console.error("Lỗi khi xoá giáo viên khỏi lớp:", error);
       alert("Không thể xoá giáo viên khỏi lớp.");
     }
-  };  
+  };
 
   if (!teacher) return <div className="p-4">Đang tải...</div>;
 
@@ -136,7 +127,9 @@ const TeacherDetailInDepartment = () => {
             </div>
             <div>
               <p className="text-gray-600">Môn dạy:</p>
-              <p className="font-semibold">{subjects.length > 0 ? subjects[0].subject_name : "Không rõ"}</p>
+              <p className="font-semibold">
+                {subjects.length > 0 ? subjects[0].subject_name : "Không rõ"}
+              </p>
             </div>
           </div>
         </div>

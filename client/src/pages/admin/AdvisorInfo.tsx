@@ -3,11 +3,9 @@ import { useEffect, useState } from "react";
 import { IoMdAdd } from "react-icons/io";
 import Swal from "sweetalert2";
 import AdvisorList from "../../components/AdvisorList";
-import { useAdvisorInfo } from "../../context/AdvisorInfoContext";
 
 const AdvisorInfor = () => {
   const [searchTerm, setSearchTerm] = useState("");
-  const { handleAdd } = useAdvisorInfo();
   const [advisors, setAdvisors] = useState<any[]>([]);
   const [newAdvisor, setNewAdvisor] = useState({
     name: "",
@@ -101,7 +99,10 @@ const AdvisorInfor = () => {
       Swal.fire("Thành công", "Đã thêm giáo viên vào hệ thống", "success");
     } catch (err: any) {
       console.error("Lỗi khi thêm giáo viên:", err);
-      const errorMessage = err.response?.data?.message ||   err.message ||  "Không thể thêm giáo viên"; 
+      const errorMessage =
+        err.response?.data?.message ||
+        err.message ||
+        "Không thể thêm giáo viên";
       Swal.fire("Lỗi", errorMessage, "error");
     }
   };

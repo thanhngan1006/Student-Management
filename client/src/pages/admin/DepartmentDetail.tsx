@@ -3,12 +3,10 @@ import { useEffect, useState } from "react";
 import { IoInformationCircle } from "react-icons/io5";
 import { MdDelete } from "react-icons/md";
 import { useParams, useNavigate } from "react-router-dom";
-import { useDepartment } from "../../context/DepartmentContext";
 
 const DepartmentDetail = () => {
   const { departmentId } = useParams();
   const navigate = useNavigate();
-  const { searchDepartmentTeachers } = useDepartment();
 
   const [departmentInfo, setDepartmentInfo] = useState<any>(null);
   const [loading, setLoading] = useState(true);
@@ -91,11 +89,6 @@ const DepartmentDetail = () => {
     navigate(`/admin/department/${departmentId}/${teacherId}`);
   };
 
-  const filteredTeachers = searchDepartmentTeachers(
-    searchTerm,
-    Number(departmentId)
-  );
-
   if (loading)
     return <div className="p-4 text-center">Đang tải dữ liệu...</div>;
   if (!departmentInfo)
@@ -128,7 +121,9 @@ const DepartmentDetail = () => {
                   {departmentInfo.headofDepartmentInfo.email})
                 </span>
               ) : (
-                <span className="text-gray-500 italic">Chưa có thông tin tổ trưởng</span>
+                <span className="text-gray-500 italic">
+                  Chưa có thông tin tổ trưởng
+                </span>
               )}
             </p>
           </div>

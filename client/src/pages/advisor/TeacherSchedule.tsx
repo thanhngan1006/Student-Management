@@ -34,16 +34,9 @@ const TeacherSchedule = () => {
   const user = JSON.parse(localStorage.getItem("user") || "{}");
   console.log("Teacher ID:", user._id);
 
-  const dayMapping: { [key: string]: string } = {
-    "Day 1": "Thứ 2",
-    "Day 2": "Thứ 3",
-    "Day 3": "Thứ 4",
-    "Day 4": "Thứ 5",
-    "Day 5": "Thứ 6",
-    "Day 6": "Thứ 7",
-  };
-
-  const parseSemesterName = (semesterName: string): { schoolYear: string; semester: number } => {
+  const parseSemesterName = (
+    semesterName: string
+  ): { schoolYear: string; semester: number } => {
     const parts = semesterName.split(" ");
     if (parts.length !== 2) {
       throw new Error(`Invalid semester_name format: ${semesterName}`);
@@ -87,22 +80,30 @@ const TeacherSchedule = () => {
         const semester = semesters.find((s) => s._id === selectedSemester);
         if (!semester) return;
 
-        const { schoolYear, semester: semesterNumber } = parseSemesterName(semester.semester_name);
+        const { schoolYear, semester: semesterNumber } = parseSemesterName(
+          semester.semester_name
+        );
 
-        const res = await axios.get("http://localhost:4001/api/schedule/teacher", {
-          params: {
-            teacherId: user._id,
-            schoolYear,
-            semester: semesterNumber,
-          },
-          headers: { Authorization: `Bearer ${token}` },
-        });
+        const res = await axios.get(
+          "http://localhost:4001/api/schedule/teacher",
+          {
+            params: {
+              teacherId: user._id,
+              schoolYear,
+              semester: semesterNumber,
+            },
+            headers: { Authorization: `Bearer ${token}` },
+          }
+        );
 
         const fetchedSchedules: Schedule[] = res.data.data;
         setSchedules(fetchedSchedules);
       } catch (err: any) {
         console.error("Lỗi khi lấy thời khóa biểu của giáo viên:", err);
-        setError(err.response?.data?.message || "Đã có lỗi xảy ra khi lấy thời khóa biểu");
+        setError(
+          err.response?.data?.message ||
+            "Đã có lỗi xảy ra khi lấy thời khóa biểu"
+        );
       } finally {
         setLoading(false);
       }
@@ -111,7 +112,9 @@ const TeacherSchedule = () => {
     fetchTeacherSchedule();
   }, [selectedSemester, semesters, token]);
 
-  const tableData: { [key: string]: { [key: number]: { className: string; subject: string }[] } } = {
+  const tableData: {
+    [key: string]: { [key: number]: { className: string; subject: string }[] };
+  } = {
     "Day 1": { 1: [], 2: [], 3: [], 4: [], 5: [] },
     "Day 2": { 1: [], 2: [], 3: [], 4: [], 5: [] },
     "Day 3": { 1: [], 2: [], 3: [], 4: [], 5: [] },
@@ -160,7 +163,9 @@ const TeacherSchedule = () => {
       </div>
 
       {loading ? (
-        <div className="text-center text-gray-500">Đang tải thời khóa biểu...</div>
+        <div className="text-center text-gray-500">
+          Đang tải thời khóa biểu...
+        </div>
       ) : error ? (
         <div className="text-center text-red-500">{error}</div>
       ) : (
@@ -181,24 +186,24 @@ const TeacherSchedule = () => {
               {[1, 2, 3, 4, 5].map((period) => (
                 <tr key={period}>
                   <td className="border p-2 font-semibold">Tiết {period}</td>
-                  {["Day 1", "Day 2", "Day 3", "Day 4", "Day 5", "Day 6"].map((day, index) => {
-                    const periodsForDayAndPeriod = tableData[day][period];
-                    return (
-                      <td key={index} className="border p-2">
-                        {periodsForDayAndPeriod.length > 0 ? (
-                          periodsForDayAndPeriod.map((item, idx) => (
-                            <div key={idx} className="mb-1">
-                              <div className="font-medium text-blue-600">
-                                {item.className} - {item.subject}
-                              </div>
-                            </div>
-                          ))
-                        ) : (
-                          "---"
-                        )}
-                      </td>
-                    );
-                  })}
+                  {["Day 1", "Day 2", "Day 3", "Day 4", "Day 5", "Day 6"].map(
+                    (day, index) => {
+                      const periodsForDayAndPeriod = tableData[day][period];
+                      return (
+                        <td key={index} className="border p-2">
+                          {periodsForDayAndPeriod.length > 0
+                            ? periodsForDayAndPeriod.map((item, idx) => (
+                                <div key={idx} className="mb-1">
+                                  <div className="font-medium text-blue-600">
+                                    {item.className} - {item.subject}
+                                  </div>
+                                </div>
+                              ))
+                            : "---"}
+                        </td>
+                      );
+                    }
+                  )}
                 </tr>
               ))}
             </tbody>

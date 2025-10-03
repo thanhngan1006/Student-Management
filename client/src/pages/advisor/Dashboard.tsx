@@ -71,14 +71,17 @@ const Dashboard: React.FC = () => {
   const [semesters, setSemesters] = useState<any[]>([]);
   const [selectedSemester, setSelectedSemester] = useState<string>("");
   const [classId, setClassId] = useState<string>("");
-console.log('Class ID:', classId);
+  console.log("Class ID:", classId);
 
   useEffect(() => {
     const fetchSemesters = async () => {
       try {
-        const res = await axios.get(`http://localhost:4000/api/${classId}/available-semesters`, {
-          headers: { Authorization: `Bearer ${token}` },
-        });
+        const res = await axios.get(
+          `http://localhost:4000/api/${classId}/available-semesters`,
+          {
+            headers: { Authorization: `Bearer ${token}` },
+          }
+        );
         setSemesters(res.data.semesters);
 
         if (res.data.semesters.length > 0) {
@@ -138,8 +141,6 @@ console.log('Class ID:', classId);
           setError("Không tìm thấy học sinh trong lớp");
           return;
         }
-
-        const totalStudents = studentsRes.data.students.length;
 
         // 2. Lấy điểm số của từng học sinh
         const studentScores = await Promise.all(

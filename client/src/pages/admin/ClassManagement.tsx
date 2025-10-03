@@ -3,8 +3,7 @@ import { Link } from "react-router-dom";
 import classImg from "../../assets/classImg.jpg";
 import { useClass } from "../../context/ClassContext";
 
-type Props = {};
-const ClassManagement = (props: Props) => {
+const ClassManagement = () => {
   const {
     classes,
     setIsFormVisible,

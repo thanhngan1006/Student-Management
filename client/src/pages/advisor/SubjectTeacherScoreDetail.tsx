@@ -17,6 +17,8 @@ const SubjectTeacherScoreDetail = () => {
 
   useEffect(() => {
     const fetchData = async () => {
+      console.log(loading);
+
       try {
         const userRes = await axios.get(
           `http://localhost:4003/api/users/tdt/${studentId}`,
@@ -33,10 +35,12 @@ const SubjectTeacherScoreDetail = () => {
           }
         );
 
-        const formattedSemesters = semesterRes.data.semesters.map((sem: any) => ({
-          id: sem._id,
-          name: sem.semester_name,
-        }));
+        const formattedSemesters = semesterRes.data.semesters.map(
+          (sem: any) => ({
+            id: sem._id,
+            name: sem.semester_name,
+          })
+        );
         setSemesters(formattedSemesters);
 
         // const scoreGroupedRes = await axios.get(
@@ -87,14 +91,20 @@ const SubjectTeacherScoreDetail = () => {
             subject_id: subject.subject_id,
             subject_code: subject.subject_code,
             subject_name: subject.subject_name,
-            score_15p: subject.scores.find((s: any) => s.category === "15p")?.score,
-            score_1tiet: subject.scores.find((s: any) => s.category === "1tiet")?.score,
-            score_giuaky: subject.scores.find((s: any) => s.category === "giuaky")?.score,
-            score_cuoiky: subject.scores.find((s: any) => s.category === "cuoiky")?.score,
+            score_15p: subject.scores.find((s: any) => s.category === "15p")
+              ?.score,
+            score_1tiet: subject.scores.find((s: any) => s.category === "1tiet")
+              ?.score,
+            score_giuaky: subject.scores.find(
+              (s: any) => s.category === "giuaky"
+            )?.score,
+            score_cuoiky: subject.scores.find(
+              (s: any) => s.category === "cuoiky"
+            )?.score,
             score: subject.subjectGPA,
           };
 
-          setGrades([formatted]); 
+          setGrades([formatted]);
         } else {
           setGrades([]);
         }
@@ -143,22 +153,26 @@ const SubjectTeacherScoreDetail = () => {
       );
       const subject = res.data.subject || [res.data.subject];
 
-        if (subject) {
-          const formatted = {
-            subject_id: subject.subject_id,
-            subject_code: subject.subject_code,
-            subject_name: subject.subject_name,
-            score_15p: subject.scores.find((s: any) => s.category === "15p")?.score,
-            score_1tiet: subject.scores.find((s: any) => s.category === "1tiet")?.score,
-            score_giuaky: subject.scores.find((s: any) => s.category === "giuaky")?.score,
-            score_cuoiky: subject.scores.find((s: any) => s.category === "cuoiky")?.score,
-            score: subject.subjectGPA,
-          };
+      if (subject) {
+        const formatted = {
+          subject_id: subject.subject_id,
+          subject_code: subject.subject_code,
+          subject_name: subject.subject_name,
+          score_15p: subject.scores.find((s: any) => s.category === "15p")
+            ?.score,
+          score_1tiet: subject.scores.find((s: any) => s.category === "1tiet")
+            ?.score,
+          score_giuaky: subject.scores.find((s: any) => s.category === "giuaky")
+            ?.score,
+          score_cuoiky: subject.scores.find((s: any) => s.category === "cuoiky")
+            ?.score,
+          score: subject.subjectGPA,
+        };
 
-          setGrades([formatted]); 
-        } else {
-          setGrades([]);
-        }
+        setGrades([formatted]);
+      } else {
+        setGrades([]);
+      }
 
       alert("Cập nhật điểm thành công!");
     } catch (error: any) {
@@ -211,39 +225,41 @@ const SubjectTeacherScoreDetail = () => {
               </tr>
             </thead>
             <tbody>
-            {grades.length > 0 ? (
-              grades.map((grade, index) => (
-                <tr key={index} className="border-t text-sm">
-                  <td className="p-3">{grade.subject_name}</td>
-                  <td className="p-3">{grade.subject_code}</td>
-                  <td className="p-3 text-center">{grade.score_15p ?? "-"}</td>
-                  <td className="p-3 text-center">
-                    {grade.score_1tiet ?? "-"}
-                  </td>
-                  <td className="p-3 text-center">
-                    {grade.score_giuaky ?? "-"}
-                  </td>
-                  <td className="p-3 text-center">
-                    {grade.score_cuoiky ?? "-"}
-                  </td>
-                  <td className="p-3 text-center">{grade.score ?? "-"}</td>
-                  <td className="p-3 text-center">
-                    <button
-                      onClick={() => setEditingSubject(grade)}
-                      className="px-2 py-1 text-xs bg-blue-400 hover:bg-blue-500 rounded text-white"
-                    >
-                      Sửa
-                    </button>
+              {grades.length > 0 ? (
+                grades.map((grade, index) => (
+                  <tr key={index} className="border-t text-sm">
+                    <td className="p-3">{grade.subject_name}</td>
+                    <td className="p-3">{grade.subject_code}</td>
+                    <td className="p-3 text-center">
+                      {grade.score_15p ?? "-"}
+                    </td>
+                    <td className="p-3 text-center">
+                      {grade.score_1tiet ?? "-"}
+                    </td>
+                    <td className="p-3 text-center">
+                      {grade.score_giuaky ?? "-"}
+                    </td>
+                    <td className="p-3 text-center">
+                      {grade.score_cuoiky ?? "-"}
+                    </td>
+                    <td className="p-3 text-center">{grade.score ?? "-"}</td>
+                    <td className="p-3 text-center">
+                      <button
+                        onClick={() => setEditingSubject(grade)}
+                        className="px-2 py-1 text-xs bg-blue-400 hover:bg-blue-500 rounded text-white"
+                      >
+                        Sửa
+                      </button>
+                    </td>
+                  </tr>
+                ))
+              ) : (
+                <tr>
+                  <td colSpan={8} className="text-center p-4 text-gray-500">
+                    Chưa có dữ liệu điểm cho học kỳ này.
                   </td>
                 </tr>
-              ))
-            ): (
-              <tr>
-                <td colSpan={8} className="text-center p-4 text-gray-500">
-                  Chưa có dữ liệu điểm cho học kỳ này.
-                </td>
-              </tr>
-            )}
+              )}
             </tbody>
           </table>
         </div>
