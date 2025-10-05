@@ -26,7 +26,9 @@ const ClassDetail = () => {
   const fetchTeachers = async () => {
     try {
       const res = await axios.get(
-        `http://localhost:4000/api/classes/${classId}/subjects`
+        `${
+          import.meta.env.VITE_CLASS_SERVICE_URL
+        }/api/classes/${classId}/subjects`
       );
       setTeachers(res.data);
     } catch (error) {
@@ -47,7 +49,9 @@ const ClassDetail = () => {
     try {
       const token = localStorage.getItem("token");
       await axios.post(
-        `http://localhost:4000/api/classes/${classId}/add-advisor`,
+        `${
+          import.meta.env.VITE_CLASS_SERVICE_URL
+        }/api/classes/${classId}/add-advisor`,
         {
           email: newAdvisorEmail,
         },
@@ -60,7 +64,9 @@ const ClassDetail = () => {
       setNewAdvisorEmail("");
       // Cập nhật lại thông tin giáo viên từ server
       const advisorRes = await axios.get(
-        `http://localhost:4000/api/classes/${classId}/advisor`
+        `${
+          import.meta.env.VITE_CLASS_SERVICE_URL
+        }/api/classes/${classId}/advisor`
       );
       setClassAdvisor(advisorRes.data.advisor);
       Swal.fire({
@@ -91,7 +97,9 @@ const ClassDetail = () => {
     try {
       const token = localStorage.getItem("token");
       await axios.put(
-        `http://localhost:4000/api/classes/${classId}/change-advisor`,
+        `${
+          import.meta.env.VITE_CLASS_SERVICE_URL
+        }/api/classes/${classId}/change-advisor`,
         {
           email: newAdvisorEmail,
         },
@@ -104,7 +112,9 @@ const ClassDetail = () => {
 
       // Cập nhật lại giáo viên sau khi thay đổi
       const advisorRes = await axios.get(
-        `http://localhost:4000/api/classes/${classId}/advisor`
+        `${
+          import.meta.env.VITE_CLASS_SERVICE_URL
+        }/api/classes/${classId}/advisor`
       );
       setClassAdvisor(advisorRes.data.advisor);
 
@@ -129,7 +139,7 @@ const ClassDetail = () => {
     try {
       const token = localStorage.getItem("token");
       const res = await axios.put(
-        "http://localhost:4000/api/classes/remove-teacher",
+        `${import.meta.env.VITE_CLASS_SERVICE_URL}/api/classes/remove-teacher`,
         {
           class_id: classId,
           teacher_id: teacherId,
@@ -171,7 +181,7 @@ const ClassDetail = () => {
 
       // Gọi API để lấy thông tin giáo viên từ email
       const teacherRes = await axios.post(
-        `http://localhost:4003/api/users/get-ids-by-emails`,
+        `${import.meta.env.VITE_USER_SERVICE_URL}/api/users/get-ids-by-emails`,
         {
           emails: [newSubjectTeacherEmail],
         },
@@ -194,7 +204,7 @@ const ClassDetail = () => {
 
       // Gọi API gán giáo viên vào lớp
       await axios.put(
-        `http://localhost:4000/api/classes/add-teacher`,
+        `${import.meta.env.VITE_CLASS_SERVICE_URL}/api/classes/add-teacher`,
         {
           class_id: classId,
           teacher_id: teacherId,
@@ -244,7 +254,9 @@ const ClassDetail = () => {
   useEffect(() => {
     const fetchClass = async () => {
       try {
-        const res = await axios.get(`http://localhost:4000/api/${classId}`);
+        const res = await axios.get(
+          `${import.meta.env.VITE_CLASS_SERVICE_URL}/api/${classId}`
+        );
         setClassInfo(res.data.class);
       } catch (error) {
         console.error("Lỗi khi tải dữ liệu lớp:", error);
@@ -258,7 +270,9 @@ const ClassDetail = () => {
     const fetchAdvisor = async () => {
       try {
         const res = await axios.get(
-          `http://localhost:4000/api/classes/${classId}/advisor`
+          `${
+            import.meta.env.VITE_CLASS_SERVICE_URL
+          }/api/classes/${classId}/advisor`
         );
         setClassAdvisor(res.data.advisor);
       } catch (err) {
@@ -275,7 +289,9 @@ const ClassDetail = () => {
     const fetchStudents = async () => {
       try {
         const res = await axios.get(
-          `http://localhost:4000/api/classes/${classId}/students`
+          `${
+            import.meta.env.VITE_CLASS_SERVICE_URL
+          }/api/classes/${classId}/students`
         );
         const mappedStudents = res.data.students.map((student: any) => ({
           ...student,

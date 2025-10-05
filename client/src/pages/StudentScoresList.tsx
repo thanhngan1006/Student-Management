@@ -5,6 +5,11 @@ import { RiExportFill } from "react-icons/ri";
 import { useNavigate } from "react-router-dom";
 
 const StudentScoresList = () => {
+  const CLASS_SERVICE_URL = import.meta.env.VITE_CLASS_SERVICE_URL;
+  const USER_SERVICE_URL = import.meta.env.VITE_USER_SERVICE_URL;
+  const EDUCATION_SERVICE_URL = import.meta.env.VITE_EDUCATION_SERVICE_URL;
+  const SCORE_SERVICE_URL = import.meta.env.VITE_SCORE_SERVICE_URL;
+
   const navigate = useNavigate();
   const user = JSON.parse(localStorage.getItem("user") || "{}");
   const role = user.role;
@@ -32,7 +37,7 @@ const StudentScoresList = () => {
         if (role === "advisor") {
           const advisorId = user.id || user._id;
           const classRes = await axios.get(
-            `http://localhost:4000/api/teachers/${advisorId}/class`,
+            `${CLASS_SERVICE_URL}/api/teachers/${advisorId}/class`,
             {
               headers: { Authorization: `Bearer ${token}` },
             }
@@ -41,10 +46,10 @@ const StudentScoresList = () => {
           fetchStudents(classRes.data.class?.students || []);
         } else if (role === "admin") {
           const [classRes, usersRes] = await Promise.all([
-            axios.get("http://localhost:4000/api/classes", {
+            axios.get(`${CLASS_SERVICE_URL}/api/classes`, {
               headers: { Authorization: `Bearer ${token}` },
             }),
-            axios.get("http://localhost:4003/api/users", {
+            axios.get(`${USER_SERVICE_URL}/api/users`, {
               headers: { Authorization: `Bearer ${token}` },
             }),
           ]);
@@ -75,7 +80,7 @@ const StudentScoresList = () => {
 
     const fetchSemesters = async () => {
       try {
-        const res = await axios.get("http://localhost:4001/api/semesters", {
+        const res = await axios.get(`${EDUCATION_SERVICE_URL}/api/semesters`, {
           headers: { Authorization: `Bearer ${token}` },
         });
         setSemesters(res.data);
@@ -95,7 +100,7 @@ const StudentScoresList = () => {
       if (studentIds.length === 0) return setOriginalStudents([]);
 
       const usersRes = await axios.post(
-        `http://localhost:4003/api/users/batch`,
+        `${USER_SERVICE_URL}/api/users/batch`,
         { ids: studentIds },
         {
           headers: { Authorization: `Bearer ${token}` },
@@ -106,7 +111,7 @@ const StudentScoresList = () => {
         usersRes.data.map(async (student: any) => {
           try {
             const res = await axios.get(
-              `http://localhost:4002/api/students/${student._id}/scores`,
+              `${SCORE_SERVICE_URL}/api/students/${student._id}/scores`,
               {
                 headers: { Authorization: `Bearer ${token}` },
               }
@@ -149,13 +154,9 @@ const StudentScoresList = () => {
       setSelectedClassId(classId);
 
       if (classId === "") {
-        // Tất cả học sinh
-        const classRes = await axios.get("http://localhost:4000/api/classes", {
+        const classRes = await axios.get(`${CLASS_SERVICE_URL}/api/classes`, {
           headers: { Authorization: `Bearer ${token}` },
         });
-        // const allStudentIds = classRes.data.flatMap(
-        //   (cls: any) => cls.class_member
-        // );
         const allStudentsWithClassInfo = classRes.data.flatMap((cls: any) =>
           cls.class_member.map((studentId: string) => ({
             studentId,
@@ -163,7 +164,7 @@ const StudentScoresList = () => {
           }))
         );
 
-        const res = await axios.get("http://localhost:4003/api/users", {
+        const res = await axios.get(`${USER_SERVICE_URL}/api/users`, {
           headers: { Authorization: `Bearer ${token}` },
         });
         const allStudents = res.data.filter((s: any) => s.role === "student");
@@ -177,10 +178,10 @@ const StudentScoresList = () => {
 
       if (classId === "no_class") {
         const [classRes, usersRes] = await Promise.all([
-          axios.get("http://localhost:4000/api/classes", {
+          axios.get(`${CLASS_SERVICE_URL}/api/classes`, {
             headers: { Authorization: `Bearer ${token}` },
           }),
-          axios.get("http://localhost:4003/api/users", {
+          axios.get(`${USER_SERVICE_URL}/api/users`, {
             headers: { Authorization: `Bearer ${token}` },
           }),
         ]);
@@ -205,7 +206,7 @@ const StudentScoresList = () => {
 
       // Học sinh thuộc 1 lớp cụ thể
       const classRes = await axios.get(
-        `http://localhost:4000/api/classes/${classId}/students`,
+        `${CLASS_SERVICE_URL}/api/classes/${classId}/students`,
         {
           headers: { Authorization: `Bearer ${token}` },
         }
@@ -227,7 +228,7 @@ const StudentScoresList = () => {
   const fetchStatusByTerm = async (studentId: string, semesterId: string) => {
     try {
       const res = await axios.get(
-        `http://localhost:4002/api/students/${studentId}/scores`,
+        `${SCORE_SERVICE_URL}/api/students/${studentId}/scores`,
         {
           params: { semester_id: semesterId },
           headers: { Authorization: `Bearer ${token}` },
@@ -253,14 +254,13 @@ const StudentScoresList = () => {
     setExportLoading(true);
     try {
       const response = await axios.get(
-        `http://localhost:4002/api/students/export/pdf`,
+        `${SCORE_SERVICE_URL}/api/students/export/pdf`,
         {
           params: { classId: classId, semesterId: selectedTerm },
           headers: { Authorization: `Bearer ${token}` },
           responseType: "blob",
         }
       );
-
       const url = window.URL.createObjectURL(new Blob([response.data]));
       const link = document.createElement("a");
       link.href = url;
@@ -290,7 +290,7 @@ const StudentScoresList = () => {
     setExportSummaryLoading(true);
     try {
       const response = await axios.get(
-        `http://localhost:4002/api/students/export/pdf/total`,
+        `${SCORE_SERVICE_URL}/api/students/export/pdf/total`,
         {
           params: { classId: classId, semesterId: selectedTerm },
           headers: { Authorization: `Bearer ${token}` },

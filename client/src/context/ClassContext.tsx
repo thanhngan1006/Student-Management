@@ -32,6 +32,7 @@ type ClassProviderProps = {
 };
 
 export const ClassProvider = ({ children }: ClassProviderProps) => {
+  const CLASS_SERVICE_URL = import.meta.env.VITE_CLASS_SERVICE_URL;
   const [classes, setClasses] = useState<ClassTypes[]>([]);
   const [studentClass, setStudentClass] = useState<ClassTypes>({
     class_id: "",
@@ -65,7 +66,7 @@ export const ClassProvider = ({ children }: ClassProviderProps) => {
     try {
       const token = localStorage.getItem("token");
       const res = await axios.post(
-        "http://localhost:4000/api/classes",
+        `${CLASS_SERVICE_URL}/api/classes`, // Thay thế
         {
           class_id: studentClass.class_id.trim(),
         },
@@ -124,7 +125,7 @@ export const ClassProvider = ({ children }: ClassProviderProps) => {
     const fetchClasses = async () => {
       console.log(newAdvisorEmail);
       try {
-        const res = await axios.get("http://localhost:4000/api/classes"); // hoặc URL tương ứng
+        const res = await axios.get(`${CLASS_SERVICE_URL}/api/classes`);
         setClasses(res.data);
       } catch (err) {
         console.error("Lỗi khi fetch lớp học:", err);

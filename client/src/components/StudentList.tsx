@@ -13,6 +13,8 @@ type Props = {
 };
 
 const StudentList = ({ students, onDelete, classId, setStudents }: Props) => {
+  const USER_URLs = import.meta.env.VITE_USER_SERVICE_URL;
+
   const [isEditing, setIsEditing] = useState(false);
   const [editingStudent, setEditingStudent] = useState<any>(null);
 
@@ -41,7 +43,7 @@ const StudentList = ({ students, onDelete, classId, setStudents }: Props) => {
       };
 
       const res = await axios.put(
-        `http://localhost:4003/api/users/${userId}`,
+        `${USER_URLs}/api/users/${userId}`,
         updatePayload,
         {
           headers: {

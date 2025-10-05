@@ -36,6 +36,12 @@ interface SnackbarState {
   message: string;
 }
 
+// Định nghĩa URL từ env vars
+const CLASS_SERVICE_URL = import.meta.env.VITE_CLASS_SERVICE_URL;
+const EDUCATION_SERVICE_URL = import.meta.env.VITE_EDUCATION_SERVICE_URL;
+const SCORE_SERVICE_URL = import.meta.env.VITE_SCORE_SERVICE_URL;
+const USER_SERVICE_URL = import.meta.env.VITE_USER_SERVICE_URL;
+
 const TeacherDashboard: React.FC = () => {
   const token = localStorage.getItem("token") || "";
   const user = JSON.parse(localStorage.getItem("user") || "{}");
@@ -72,7 +78,7 @@ const TeacherDashboard: React.FC = () => {
           throw new Error("Không tìm thấy token. Vui lòng đăng nhập lại.");
         }
         const response = await axios.get<string[]>(
-          "http://localhost:4001/api/semesters/school-years",
+          `${EDUCATION_SERVICE_URL}/api/semesters/school-years`, // Thay thế
           {
             headers: { Authorization: `Bearer ${token}` },
           }
@@ -113,7 +119,7 @@ const TeacherDashboard: React.FC = () => {
 
         // Fetch class data
         const classRes = await axios.get<{ class: ClassData }>(
-          `http://localhost:4000/api/teachers/${user._id}/class`,
+          `${CLASS_SERVICE_URL}/api/teachers/${user._id}/class`, // Thay thế
           { headers: { Authorization: `Bearer ${token}` } }
         );
         const { class_id, class_name, students } = classRes.data.class;
@@ -128,7 +134,7 @@ const TeacherDashboard: React.FC = () => {
 
         // Fetch semesters for the selected school year
         const semesterRes = await axios.get<Semester[]>(
-          `http://localhost:4001/api/semesters?school_year=${selectedSchoolYear}`,
+          `${EDUCATION_SERVICE_URL}/api/semesters?school_year=${selectedSchoolYear}`, // Thay thế
           { headers: { Authorization: `Bearer ${token}` } }
         );
         const semesters = semesterRes.data;
@@ -149,7 +155,7 @@ const TeacherDashboard: React.FC = () => {
 
         // Fetch student details
         const usersRes = await axios.post<{ data: Student[] }>(
-          "http://localhost:4003/api/users/batch",
+          `${USER_SERVICE_URL}/api/users/batch`, // Thay thế
           { ids: students },
           { headers: { Authorization: `Bearer ${token}` } }
         );
@@ -185,7 +191,7 @@ const TeacherDashboard: React.FC = () => {
               }
 
               const scoresRes = await axios.get<{ data: Score[] }>(
-                `http://localhost:4002/api/students/status-behavior?user_id=${student._id}&semester_ids=${semesterIdsParam}`,
+                `${SCORE_SERVICE_URL}/api/students/status-behavior?user_id=${student._id}&semester_ids=${semesterIdsParam}`, // Thay thế
                 { headers: { Authorization: `Bearer ${token}` } }
               );
               const scores = scoresRes.data.data;
@@ -312,7 +318,7 @@ const TeacherDashboard: React.FC = () => {
       }
 
       const response = await axios.post<{ approvalId: string }>(
-        "http://localhost:4000/api/approvals/submit",
+        `${CLASS_SERVICE_URL}/api/approvals/submit`, // Thay thế
         submission,
         { headers: { Authorization: `Bearer ${token}` } }
       );

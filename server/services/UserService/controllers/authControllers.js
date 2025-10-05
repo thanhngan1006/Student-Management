@@ -145,7 +145,7 @@ exports.sendResetLink = async (req, res) => {
       to: email,
       subject: "Đặt lại mật khẩu Stdportal",
       html: `<p>Bạn đã yêu cầu đặt lại mật khẩu. Nhấn vào liên kết bên dưới để đặt lại:</p>
-               <a href="http://localhost:5174/new-password/${token}">Đặt lại mật khẩu</a>`,
+               <a href="http://localhost:5173/new-password/${token}">Đặt lại mật khẩu</a>`,
     });
 
     res.status(200).json({ message: "Đã gửi email đặt lại mật khẩu" });

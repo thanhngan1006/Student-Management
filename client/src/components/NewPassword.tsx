@@ -5,6 +5,7 @@ import { FaEye, FaEyeSlash } from "react-icons/fa"; // Import biểu tượng m�
 import axios from "axios";
 
 const NewPassword = () => {
+  const USER_URLs = import.meta.env.VITE_USER_SERVICE_URL;
   const { userId } = useParams(); // token nằm ở đây
   const navigate = useNavigate();
   const [newPassword, setNewPassword] = useState("");
@@ -35,7 +36,7 @@ const NewPassword = () => {
       }
 
       const response = await axios.post(
-        "http://localhost:4003/api/auth/reset-password",
+        `${USER_URLs}/api/auth/reset-password`,
         {
           token: userId,
           newPassword,

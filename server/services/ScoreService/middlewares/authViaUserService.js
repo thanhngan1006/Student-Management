@@ -10,14 +10,8 @@ exports.verifyTokenViaUserService = async (req, res, next) => {
   }
 
   try {
-    // const response = await axios.get("http://localhost:4003/api/auth/verify", {
-    //   headers: {
-    //     Authorization: `Bearer ${token}`,
-    //   },
-    // });
-
     const response = await axios.get(
-      `${process.env.USER_SERVICE_URL}/api/auth/verify`,
+      `${process.env.VITE_USER_SERVICE_URL}/api/auth/verify`,
       {
         headers: {
           Authorization: `Bearer ${token}`,

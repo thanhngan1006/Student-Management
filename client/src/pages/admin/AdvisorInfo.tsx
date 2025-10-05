@@ -5,6 +5,9 @@ import Swal from "sweetalert2";
 import AdvisorList from "../../components/AdvisorList";
 
 const AdvisorInfor = () => {
+  const USER_SERVICE_URL = import.meta.env.VITE_USER_SERVICE_URL;
+  const CLASS_SERVICE_URL = import.meta.env.VITE_CLASS_SERVICE_URL;
+
   const [searchTerm, setSearchTerm] = useState("");
   const [advisors, setAdvisors] = useState<any[]>([]);
   const [newAdvisor, setNewAdvisor] = useState({
@@ -21,7 +24,7 @@ const AdvisorInfor = () => {
   const fetchAdvisors = async () => {
     try {
       const token = localStorage.getItem("token");
-      const res = await axios.get("http://localhost:4003/api/users/advisors", {
+      const res = await axios.get(`${USER_SERVICE_URL}/api/users/advisors`, {
         headers: { Authorization: `Bearer ${token}` },
       });
       const advisorList = res.data;
@@ -29,7 +32,10 @@ const AdvisorInfor = () => {
         advisorList.map(async (advisor: any) => {
           try {
             const classRes = await axios.get(
-              `http://localhost:4000/api/teachers/${advisor._id}/class`
+              `${CLASS_SERVICE_URL}/api/teachers/${advisor._id}/class`,
+              {
+                headers: { Authorization: `Bearer ${token}` },
+              }
             );
             return {
               ...advisor,
@@ -78,7 +84,7 @@ const AdvisorInfor = () => {
       const token = localStorage.getItem("token");
       console.log("Token:", token);
       const res = await axios.post(
-        "http://localhost:4003/api/users/add-advisor",
+        `${USER_SERVICE_URL}/api/users/add-advisor`,
         payload,
         {
           headers: { Authorization: `Bearer ${token}` },

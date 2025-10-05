@@ -1545,7 +1545,7 @@ exports.getClassStudents = async (req, res) => {
 
     // Gọi sang UserService để lấy thông tin các user
     const response = await axios.post(
-      `${process.env.USER_SERVICE_URL}/api/users/batch`,
+      `${process.env.VITE_USER_SERVICE_URL}/api/users/batch`,
       {
         ids: studentIds,
       }
@@ -1579,7 +1579,7 @@ exports.getAdvisorByClassId = async (req, res) => {
     }
 
     const advisorRes = await axios.get(
-      `${process.env.USER_SERVICE_URL}/api/users/${advisorId}`
+      `${process.env.VITE_USER_SERVICE_URL}/api/users/${advisorId}`
     );
     const advisor = advisorRes.data;
 
@@ -1688,7 +1688,7 @@ exports.getAdvisorOfStudent = async (req, res) => {
     const advisorId = classDoc.class_teacher;
 
     const advisorResponse = await axios.get(
-      `${process.env.USER_SERVICE_URL}/api/users/${advisorId}`
+      `${process.env.VITE_USER_SERVICE_URL}/api/users/${advisorId}`
     );
     const advisor = advisorResponse.data;
 
@@ -1828,7 +1828,7 @@ exports.importStudentsToClass = async (req, res) => {
           return res.status(400).json({ message: "File không có email nào" });
 
         const userRes = await axios.post(
-          `${process.env.USER_SERVICE_URL}/api/users/get-ids-by-emails`,
+          `${process.env.VITE_USER_SERVICE_URL}/api/users/get-ids-by-emails`,
           {
             emails,
           }
@@ -1912,7 +1912,7 @@ exports.addStudentToClass = async (req, res) => {
     const { classId } = req.params;
     const { email } = req.body;
 
-    const userServiceURL = `${process.env.USER_SERVICE_URL}/api/users/get-ids-by-emails`;
+    const userServiceURL = `${process.env.VITE_USER_SERVICE_URL}/api/users/get-ids-by-emails`;
     const userResponse = await axios.post(userServiceURL, {
       emails: [email],
     });
@@ -1963,7 +1963,7 @@ exports.addAdvisorToClass = async (req, res) => {
     const { classId } = req.params;
     const { email } = req.body;
 
-    const userServiceURL = `${process.env.USER_SERVICE_URL}/api/users/get-ids-by-emails`;
+    const userServiceURL = `${process.env.VITE_USER_SERVICE_URL}/api/users/get-ids-by-emails`;
     const userResponse = await axios.post(userServiceURL, {
       emails: [email],
     });
@@ -2007,7 +2007,7 @@ exports.addAdvisorToClass = async (req, res) => {
 
     try {
       await axios.put(
-        `${process.env.USER_SERVICE_URL}/api/users/${advisorId}/add-homeroom-teacher`
+        `${process.env.VITE_USER_SERVICE_URL}/api/users/${advisorId}/add-homeroom-teacher`
       );
     } catch (err) {
       console.warn(
@@ -2031,7 +2031,7 @@ exports.changeAdvisorOfClass = async (req, res) => {
     const { classId } = req.params;
     const { email } = req.body;
 
-    const userServiceURL = `${process.env.USER_SERVICE_URL}/api/users/get-ids-by-emails`;
+    const userServiceURL = `${process.env.VITE_USER_SERVICE_URL}/api/users/get-ids-by-emails`;
     const userResponse = await axios.post(userServiceURL, {
       emails: [email],
     });
@@ -2070,7 +2070,7 @@ exports.changeAdvisorOfClass = async (req, res) => {
     if (currentAdvisorId) {
       try {
         await axios.put(
-          `${process.env.USER_SERVICE_URL}/api/users/${currentAdvisorId}/remove-homeroom-teacher`
+          `${process.env.VITE_USER_SERVICE_URL}/api/users/${currentAdvisorId}/remove-homeroom-teacher`
         );
       } catch (err) {
         console.warn(
@@ -2082,7 +2082,7 @@ exports.changeAdvisorOfClass = async (req, res) => {
 
     try {
       await axios.put(
-        `${process.env.USER_SERVICE_URL}/api/users/${newAdvisorId}/add-homeroom-teacher`
+        `${process.env.VITE_USER_SERVICE_URL}/api/users/${newAdvisorId}/add-homeroom-teacher`
       );
     } catch (err) {
       console.warn(
@@ -2133,7 +2133,7 @@ exports.assignTeacherToClass = async (req, res) => {
 
     try {
       await axios.put(
-        `${process.env.USER_SERVICE_URL}/api/users/${teacher_id}/add-homeroom-teacher`
+        `${process.env.VITE_USER_SERVICE_URL}/api/users/${teacher_id}/add-homeroom-teacher`
       );
     } catch (err) {
       console.warn(
@@ -2215,7 +2215,7 @@ exports.getClassesByTdtId = async (req, res) => {
 
   try {
     const user = await axios.get(
-      `${process.env.USER_SERVICE_URL}/api/users/tdt/${tdt_id}`
+      `${process.env.VITE_USER_SERVICE_URL}/api/users/tdt/${tdt_id}`
     );
     const userId = user.data._id;
 
@@ -2244,13 +2244,13 @@ exports.addClassForTeacher = async (req, res) => {
 
   try {
     const teacherRes = await axios.get(
-      `${process.env.USER_SERVICE_URL}/api/users/${teacher_id}`
+      `${process.env.VITE_USER_SERVICE_URL}/api/users/${teacher_id}`
     );
     const teacher = teacherRes.data;
     const tdt_id = teacher.tdt_id;
 
     const subjectRes = await axios.get(
-      `${process.env.EDUCATION_SERVICE_URL}/api/departments/${tdt_id}/subjects`
+      `${process.env.VITE_EDUCATION_SERVICE_URL}/api/departments/${tdt_id}/subjects`
     );
     const teacherSubjects = subjectRes.data;
 
@@ -2261,7 +2261,7 @@ exports.addClassForTeacher = async (req, res) => {
     }
 
     const classRes = await axios.get(
-      `${process.env.CLASS_SERVICE_URL}/api/${class_id}`
+      `${process.env.VITE_CLASS_SERVICE_URL}/api/${class_id}`
     );
     const foundClass = classRes.data.class;
 
@@ -2274,7 +2274,7 @@ exports.addClassForTeacher = async (req, res) => {
     const existingTeachers = await Promise.all(
       currentTeacherIds.map((id) =>
         axios
-          .get(`${process.env.USER_SERVICE_URL}/api/users/${id}`)
+          .get(`${process.env.VITE_USER_SERVICE_URL}/api/users/${id}`)
           .then((res) => res.data)
       )
     );
@@ -2283,7 +2283,7 @@ exports.addClassForTeacher = async (req, res) => {
 
     for (const t of existingTeachers) {
       const deptRes = await axios.get(
-        `${process.env.EDUCATION_SERVICE_URL}/api/departments/${t.tdt_id}/subjects`
+        `${process.env.VITE_EDUCATION_SERVICE_URL}/api/departments/${t.tdt_id}/subjects`
       );
       const subjects = deptRes.data;
       subjects.forEach((sub) => {
@@ -2372,7 +2372,7 @@ exports.getSubjectsOfClass = async (req, res) => {
 
     for (const teacherId of teacherIds) {
       const teacherRes = await axios.get(
-        `${process.env.USER_SERVICE_URL}/api/users/${teacherId}`
+        `${process.env.VITE_USER_SERVICE_URL}/api/users/${teacherId}`
       );
       const teacherData = teacherRes.data;
 
@@ -2385,7 +2385,7 @@ exports.getSubjectsOfClass = async (req, res) => {
       const { _id, name, tdt_id, phone_number, email } = teacherData;
 
       const subjectsRes = await axios.get(
-        `${process.env.EDUCATION_SERVICE_URL}/api/departments/${tdt_id}/subjects`
+        `${process.env.VITE_EDUCATION_SERVICE_URL}/api/departments/${tdt_id}/subjects`
       );
       const teacherSubjects = subjectsRes.data;
 
@@ -2454,7 +2454,7 @@ exports.getAvailableSemestersForClass = async (req, res) => {
     const studiedYears = getStudiedSchoolYears(classDoc);
 
     const semesterResponse = await axios.post(
-      `${process.env.EDUCATION_SERVICE_URL}/api/semesters/by-years`,
+      `${process.env.VITE_EDUCATION_SERVICE_URL}/api/semesters/by-years`,
       {
         years: studiedYears,
       }
@@ -2503,7 +2503,7 @@ exports.graduate12thStudents = async (req, res) => {
       console.log(`🔍 Đang xử lý lớp ${cls.class_id}...`);
 
       const { data: classData } = await axios.get(
-        `${process.env.CLASS_SERVICE_URL}/api/classes/${cls.class_id}/students`
+        `${process.env.VITE_CLASS_SERVICE_URL}/api/classes/${cls.class_id}/students`
       );
       console.log(
         `🧑‍🎓 Lớp ${cls.class_id} có ${classData.students.length} học sinh`
@@ -2516,7 +2516,7 @@ exports.graduate12thStudents = async (req, res) => {
 
         try {
           const { data: scoreboard } = await axios.get(
-            `${process.env.SCORE_SERVICE_URL}/api/students/${student._id}/latest`
+            `${process.env.VITE_SCORE_SERVICE_URL}/api/students/${student._id}/latest`
           );
 
           const gpa = scoreboard?.gpa || 0;
@@ -2558,7 +2558,7 @@ exports.graduate12thStudents = async (req, res) => {
 
       if (graduated.length > 0) {
         await axios.post(
-          `${process.env.USER_SERVICE_URL}/api/users/graduated`,
+          `${process.env.VITE_USER_SERVICE_URL}/api/users/graduated`,
           {
             student_ids: graduated,
             graduation_year: currentYear,
@@ -2945,7 +2945,7 @@ exports.approveApproval = async (req, res) => {
     let promotionDetails = [];
     try {
       const promoteResponse = await axios.post(
-        `${process.env.CLASS_SERVICE_URL}/api/classes/promote`,
+        `${process.env.VITE_CLASS_SERVICE_URL}/api/classes/promote`,
         {
           school_year: approval.school_year,
           class_id: approval.class_id,

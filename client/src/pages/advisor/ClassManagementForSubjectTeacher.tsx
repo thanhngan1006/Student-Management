@@ -4,6 +4,11 @@ import { FaInfoCircle, FaSearch } from "react-icons/fa";
 import { RiExportFill } from "react-icons/ri";
 import { useNavigate } from "react-router-dom";
 
+// Định nghĩa URL từ env vars
+const CLASS_SERVICE_URL = import.meta.env.VITE_CLASS_SERVICE_URL;
+const USER_SERVICE_URL = import.meta.env.VITE_USER_SERVICE_URL;
+const SCORE_SERVICE_URL = import.meta.env.VITE_SCORE_SERVICE_URL;
+
 const ClassManagementForSubjectTeacher = () => {
   const navigate = useNavigate();
   const user = JSON.parse(localStorage.getItem("user") || "{}");
@@ -23,7 +28,7 @@ const ClassManagementForSubjectTeacher = () => {
     const fetchTeacherClasses = async () => {
       try {
         const classesRes = await axios.get(
-          `http://localhost:4000/api/teacher/tdt/${user.tdt_id}`,
+          `${CLASS_SERVICE_URL}/api/teacher/tdt/${user.tdt_id}`, // Thay thế
           {
             headers: { Authorization: `Bearer ${token}` },
           }
@@ -44,7 +49,7 @@ const ClassManagementForSubjectTeacher = () => {
   const fetchSemesters = async (classId: string) => {
     try {
       const res = await axios.get(
-        `http://localhost:4000/api/${classId}/available-semesters`,
+        `${CLASS_SERVICE_URL}/${classId}/available-semesters`, // Thay thế
         {
           headers: { Authorization: `Bearer ${token}` },
         }
@@ -82,9 +87,9 @@ const ClassManagementForSubjectTeacher = () => {
       }
 
       await fetchSemesters(classId);
-      
+
       const classRes = await axios.get(
-        `http://localhost:4000/api/classes/${classId}/students`,
+        `${CLASS_SERVICE_URL}/api/classes/${classId}/students`, // Thay thế
         {
           headers: { Authorization: `Bearer ${token}` },
         }
@@ -99,7 +104,7 @@ const ClassManagementForSubjectTeacher = () => {
       }
 
       const usersRes = await axios.post(
-        `http://localhost:4003/api/users/batch`,
+        `${USER_SERVICE_URL}/api/users/batch`, // Thay thế
         { ids: studentIds },
         {
           headers: { Authorization: `Bearer ${token}` },
@@ -110,7 +115,7 @@ const ClassManagementForSubjectTeacher = () => {
         usersRes.data.map(async (student: any) => {
           try {
             const scoreRes = await axios.get(
-              `http://localhost:4002/api/students/${student._id}/scores`,
+              `${SCORE_SERVICE_URL}/api/students/${student._id}/scores`, // Thay thế
               {
                 headers: { Authorization: `Bearer ${token}` },
               }
@@ -153,7 +158,7 @@ const ClassManagementForSubjectTeacher = () => {
     setExportLoading(true);
     try {
       const response = await axios.get(
-        `http://localhost:4002/api/students/export/pdf/subject`,
+        `${SCORE_SERVICE_URL}/api/students/export/pdf/subject`, // Thay thế
         {
           params: {
             classId: selectedClass,
@@ -264,7 +269,6 @@ const ClassManagementForSubjectTeacher = () => {
             {exportLoading ? "Đang xuất..." : "Xuất PDF"}
           </button>
         )}
-        
       </div>
 
       {selectedClass && (

@@ -44,6 +44,10 @@ interface AcademicPerformance {
   poor: number; // Yếu: < 5.0
 }
 
+const CLASS_SERVICE_URL = import.meta.env.VITE_CLASS_SERVICE_URL;
+const USER_SERVICE_URL = import.meta.env.VITE_USER_SERVICE_URL;
+const SCORE_SERVICE_URL = import.meta.env.VITE_SCORE_SERVICE_URL;
+
 const Dashboard: React.FC = () => {
   const teacherId = localStorage.getItem("tdt_id");
   const token = localStorage.getItem("token");
@@ -77,7 +81,7 @@ const Dashboard: React.FC = () => {
     const fetchSemesters = async () => {
       try {
         const res = await axios.get(
-          `http://localhost:4000/api/${classId}/available-semesters`,
+          `${CLASS_SERVICE_URL}/${classId}/available-semesters`, // Thay thế
           {
             headers: { Authorization: `Bearer ${token}` },
           }
@@ -104,7 +108,7 @@ const Dashboard: React.FC = () => {
     const fetchData = async () => {
       try {
         const teacheRes = await axios.get(
-          `http://localhost:4003/api/users/tdt/${teacherId}`,
+          `${USER_SERVICE_URL}/api/users/tdt/${teacherId}`, // Thay thế
           {
             headers: { Authorization: `Bearer ${token}` },
           }
@@ -112,7 +116,7 @@ const Dashboard: React.FC = () => {
 
         const mongoTeacherId = teacheRes.data._id;
         const classRes = await axios.get(
-          `http://localhost:4000/api/classes/by-teacher/${mongoTeacherId}`,
+          `${CLASS_SERVICE_URL}/api/classes/by-teacher/${mongoTeacherId}`, // Thay thế
           {
             headers: { Authorization: `Bearer ${token}` },
           }
@@ -129,7 +133,7 @@ const Dashboard: React.FC = () => {
 
         // 1. Lấy danh sách học sinh trong lớp
         const studentsRes = await axios.get(
-          `http://localhost:4000/api/classes/${fetchedClassId}/students`,
+          `${CLASS_SERVICE_URL}/api/classes/${fetchedClassId}/students`, // Thay thế
           { headers: { Authorization: `Bearer ${token}` } }
         );
 
@@ -147,7 +151,7 @@ const Dashboard: React.FC = () => {
           studentsRes.data.students.map(async (student: any) => {
             try {
               const scoreRes = await axios.get<StudentScoreResponse>(
-                `http://localhost:4002/api/students/${student._id}/scores?semester_id=${selectedSemester}`,
+                `${SCORE_SERVICE_URL}/api/students/${student._id}/scores?semester_id=${selectedSemester}`, // Thay thế
                 { headers: { Authorization: `Bearer ${token}` } }
               );
               return scoreRes.data;

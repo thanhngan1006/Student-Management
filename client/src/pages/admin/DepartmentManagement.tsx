@@ -23,7 +23,9 @@ const DepartmentManagement = () => {
 
   useEffect(() => {
     axios
-      .get("http://localhost:4001/api/departments")
+      .get(`${import.meta.env.VITE_EDUCATION_SERVICE_URL}/api/departments`, {
+        headers: { Authorization: `Bearer ${localStorage.getItem("token")}` },
+      })
       .then((res) => setDepartments(res.data))
       .catch((err) => console.error("Lỗi khi lấy dữ liệu tổ:", err));
   }, []);

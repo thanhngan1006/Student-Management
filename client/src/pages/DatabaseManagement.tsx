@@ -14,6 +14,10 @@ const UploadSection = ({
   type: string;
   classId?: string;
 }) => {
+  const CLASS_SERVICE_URL = import.meta.env.VITE_CLASS_SERVICE_URL;
+  const EDUCATION_SERVICE_URL = import.meta.env.VITE_EDUCATION_SERVICE_URL;
+  const SCORE_SERVICE_URL = import.meta.env.VITE_SCORE_SERVICE_URL;
+  const USER_SERVICE_URL = import.meta.env.VITE_USER_SERVICE_URL;
   const [file, setFile] = useState<File | null>(null);
   const [uploading, setUploading] = useState(false);
 
@@ -27,13 +31,13 @@ const UploadSection = ({
     let endpoint = "";
     switch (type) {
       case "subjects":
-        endpoint = "http://localhost:4001/api/subjects/import-subjects";
+        endpoint = `${EDUCATION_SERVICE_URL}/api/subjects/import-subjects`;
         break;
       case "semesters":
-        endpoint = "http://localhost:4001/api/semesters/import-semesters";
+        endpoint = `${EDUCATION_SERVICE_URL}/api/semesters/import-semesters`;
         break;
       case "grades":
-        endpoint = "http://localhost:4002/api/students/import-scores";
+        endpoint = `${SCORE_SERVICE_URL}/api/students/import-scores`;
         break;
       case "members":
         if (!classId) {
@@ -41,13 +45,13 @@ const UploadSection = ({
           setUploading(false);
           return;
         }
-        endpoint = `http://localhost:4000/api/classes/${classId}/import-students`;
+        endpoint = `${CLASS_SERVICE_URL}/api/classes/${classId}/import-students`;
         break;
       case "students":
-        endpoint = "http://localhost:4003/api/users/import-file";
+        endpoint = `${USER_SERVICE_URL}/api/users/import-file`;
         break;
       case "cvht":
-        endpoint = "http://localhost:4003/api/users/import-advisors";
+        endpoint = `${USER_SERVICE_URL}/api/users/import-advisors`;
         break;
       default:
         Swal.fire("Lỗi", "Loại dữ liệu không hợp lệ", "error");
@@ -117,6 +121,8 @@ const UploadSection = ({
 };
 
 const DatabaseManagement = () => {
+  const CLASS_SERVICE_URL = import.meta.env.VITE_CLASS_SERVICE_URL;
+
   const user = JSON.parse(localStorage.getItem("user") || "{}");
   const role = user.role;
 
@@ -143,7 +149,7 @@ const DatabaseManagement = () => {
       try {
         const token = localStorage.getItem("token");
         const res = await axios.get(
-          `http://localhost:4000/api/teachers/${user._id}/class`,
+          `${CLASS_SERVICE_URL}/api/teachers/${user._id}/class`,
           {
             headers: { Authorization: `Bearer ${token}` },
           }

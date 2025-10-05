@@ -64,7 +64,7 @@ const AdminDashboard: React.FC = () => {
         }
 
         const response = await axios.get<Approval[]>(
-          "http://localhost:4000/api/approvals/pending",
+          `${import.meta.env.VITE_CLASS_SERVICE_URL}/api/approvals/pending`,
           {
             headers: { Authorization: `Bearer ${token}` },
           }
@@ -95,11 +95,12 @@ const AdminDashboard: React.FC = () => {
       const response = await axios.patch<{
         promotionResults: PromotionResult[];
       }>(
-        `http://localhost:4000/api/approvals/${approvalId}/approve`,
+        `${
+          import.meta.env.VITE_CLASS_SERVICE_URL
+        }/api/approvals/${approvalId}/approve`,
         {},
         { headers: { Authorization: `Bearer ${token}` } }
       );
-
       setPendingApprovals(
         pendingApprovals.filter((approval) => approval._id !== approvalId)
       );

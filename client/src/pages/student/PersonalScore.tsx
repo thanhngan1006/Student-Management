@@ -1,6 +1,10 @@
 import axios from "axios";
 import { useEffect, useState } from "react";
 
+const USER_SERVICE_URL = import.meta.env.VITE_USER_SERVICE_URL;
+const CLASS_SERVICE_URL = import.meta.env.VITE_CLASS_SERVICE_URL;
+const SCORE_SERVICE_URL = import.meta.env.VITE_SCORE_SERVICE_URL;
+
 const PersonalScore = () => {
   const token = localStorage.getItem("token");
   const user = JSON.parse(localStorage.getItem("user") || "{}");
@@ -19,7 +23,7 @@ const PersonalScore = () => {
       try {
         // Lấy thông tin user từ tdt_id
         const userRes = await axios.get(
-          `http://localhost:4003/api/users/tdt/${tdt_id}`,
+          `${USER_SERVICE_URL}/api/users/tdt/${tdt_id}`, // Thay thế
           { headers: { Authorization: `Bearer ${token}` } }
         );
         const userData = userRes.data;
@@ -27,14 +31,14 @@ const PersonalScore = () => {
 
         // Lấy lớp học
         const classRes = await axios.get(
-          `http://localhost:4000/api/students/${userData._id}/class`,
+          `${CLASS_SERVICE_URL}/api/students/${userData._id}/class`, // Thay thế
           { headers: { Authorization: `Bearer ${token}` } }
         );
         const classId = classRes.data.class.class_id;
 
         // Lấy danh sách kỳ học đã học theo class
         const semesterRes = await axios.get(
-          `http://localhost:4000/api/${classId}/available-semesters`,
+          `${CLASS_SERVICE_URL}/${classId}/available-semesters`, // Thay thế
           { headers: { Authorization: `Bearer ${token}` } }
         );
         const semesterList = semesterRes.data.semesters.map((s: any) => ({
@@ -70,12 +74,11 @@ const PersonalScore = () => {
             : "";
 
         const res = await axios.get(
-          `http://localhost:4002/api/students/${userDetail._id}/scores${query}`,
+          `${SCORE_SERVICE_URL}/api/students/${userDetail._id}/scores${query}`, // Thay thế
           {
             headers: { Authorization: `Bearer ${token}` },
           }
         );
-
         setGrades(res.data.scores);
         setStatus(res.data.status || "");
         setGpa(parseFloat(res.data.gpa));
@@ -141,41 +144,48 @@ const PersonalScore = () => {
             </thead>
             <tbody>
               {grades.length === 0 ? (
-              <tr>
-                <td colSpan={8} className="p-4 text-center text-gray-500 italic">
-                  Kỳ học này chưa có điểm.
-                </td>
-              </tr>
-            ) : (
-              <>
-              {grades.map((grade, index) => ( 
-                <tr key={index} className="border-t text-sm">
-                  <td className="p-3">{grade.subject_name}</td>
-                  <td className="p-3">{grade.subject_code}</td>
-                  <td className="p-3 text-center">{grade.score_15p ?? "-"}</td>
-                  <td className="p-3 text-center">
-                    {grade.score_1tiet ?? "-"}
-                  </td>
-                  <td className="p-3 text-center">
-                    {grade.score_giuaky ?? "-"}
-                  </td>
-                  <td className="p-3 text-center">
-                    {grade.score_cuoiky ?? "-"}
-                  </td>
-                  <td className="p-3 text-center">{grade.score ?? "-"}</td>
-                  <td className="p-3">
-                    {selectedSemesterId === "all" ? grade.semester_name : ""}
+                <tr>
+                  <td
+                    colSpan={8}
+                    className="p-4 text-center text-gray-500 italic"
+                  >
+                    Kỳ học này chưa có điểm.
                   </td>
                 </tr>
-              ))}
-              <tr className="font-semibold border-t">
-                <td className="p-3" colSpan={2}>
-                  Tổng kết
-                </td>
-                <td className="p-3 text-center">{gpa.toFixed(2)}</td>
-                <td className="p-3"></td>
-              </tr>
-               </>
+              ) : (
+                <>
+                  {grades.map((grade, index) => (
+                    <tr key={index} className="border-t text-sm">
+                      <td className="p-3">{grade.subject_name}</td>
+                      <td className="p-3">{grade.subject_code}</td>
+                      <td className="p-3 text-center">
+                        {grade.score_15p ?? "-"}
+                      </td>
+                      <td className="p-3 text-center">
+                        {grade.score_1tiet ?? "-"}
+                      </td>
+                      <td className="p-3 text-center">
+                        {grade.score_giuaky ?? "-"}
+                      </td>
+                      <td className="p-3 text-center">
+                        {grade.score_cuoiky ?? "-"}
+                      </td>
+                      <td className="p-3 text-center">{grade.score ?? "-"}</td>
+                      <td className="p-3">
+                        {selectedSemesterId === "all"
+                          ? grade.semester_name
+                          : ""}
+                      </td>
+                    </tr>
+                  ))}
+                  <tr className="font-semibold border-t">
+                    <td className="p-3" colSpan={2}>
+                      Tổng kết
+                    </td>
+                    <td className="p-3 text-center">{gpa.toFixed(2)}</td>
+                    <td className="p-3"></td>
+                  </tr>
+                </>
               )}
             </tbody>
           </table>

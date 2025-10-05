@@ -18,6 +18,9 @@ import { Link, useNavigate } from "react-router-dom";
 import { useClass } from "../context/ClassContext";
 
 const Home = () => {
+  const CLASS_SERVICE_URL = import.meta.env.VITE_CLASS_SERVICE_URL;
+  const USER_SERVICE_URL = import.meta.env.VITE_USER_SERVICE_URL;
+
   const navigate = useNavigate();
   const user = JSON.parse(localStorage.getItem("user") || "{}");
   const token = localStorage.getItem("token");
@@ -49,7 +52,7 @@ const Home = () => {
     const fetchUser = async () => {
       try {
         const res = await axios.get(
-          `http://localhost:4003/api/users/tdt/${tdt_id}`,
+          `${USER_SERVICE_URL}/api/users/tdt/${tdt_id}`,
           {
             headers: {
               Authorization: `Bearer ${token}`,
@@ -65,7 +68,7 @@ const Home = () => {
 
         if (res.data.role === "student") {
           const advRes = await axios.get(
-            `http://localhost:4000/api/students/${studentId}/advisor`,
+            `${CLASS_SERVICE_URL}/api/students/${studentId}/advisor`,
             {
               headers: { Authorization: `Bearer ${token}` },
             }
@@ -74,22 +77,14 @@ const Home = () => {
           console.log("advRes o student", advRes);
           setAdvisor(advRes.data.advisor);
           setStudentClass(advRes.data.class);
-
-          // console.log("Student Class:", advRes.data.class);
         }
         if (fetchedUser.role === "advisor") {
           const advisorId = fetchedUser._id;
-          // const classRes = await axios.get(
-          //   `http://localhost:4000/api/teachers/${advisorId}/class`,
-          //   {
-          //     headers: { Authorization: `Bearer ${token}` },
-          //   }
-          // );
 
           if (fetchedUser.advisor_type.includes("homeroom_teacher")) {
             try {
               const classRes = await axios.get(
-                `http://localhost:4000/api/teachers/${advisorId}/class`,
+                `${CLASS_SERVICE_URL}/api/teachers/${advisorId}/class`,
                 {
                   headers: { Authorization: `Bearer ${token}` },
                 }

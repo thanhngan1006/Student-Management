@@ -8,8 +8,9 @@ type Props = {
   onRefresh: () => void;
 };
 
+const API_URL = import.meta.env.VITE_USER_SERVICE_URL;
+
 const AdvisorList = ({ advisors, onRefresh }: Props) => {
-  const API_URL = process.env.REACT_APP_API_GATEWAY_URL;
   const [isEditing, setIsEditing] = useState(false);
   const [editingAdvisor, setEditingAdvisor] = useState<any>(null);
   const [departmentNames, setDepartmentNames] = useState<{
@@ -18,29 +19,35 @@ const AdvisorList = ({ advisors, onRefresh }: Props) => {
 
   useEffect(() => {
     const fetchDepartments = async () => {
+      if (!advisors || advisors.length === 0) return;
       const token = localStorage.getItem("token");
       const newMap: { [key: string]: string } = {};
 
-      await Promise.all(
-        advisors.map(async (advisor) => {
-          try {
-            const res = await axios.get(
-              `${API_URL}/api/departments/of-user/${advisor._id}`,
-              { headers: { Authorization: `Bearer ${token}` } }
-            );
-            newMap[advisor._id] = res.data.departmentName;
-          } catch (err) {
-            newMap[advisor._id] = "Chưa có tổ";
-          }
-        })
-      );
-
-      setDepartmentNames(newMap);
+      try {
+        await Promise.all(
+          advisors.map(async (advisor) => {
+            try {
+              const res = await axios.get(
+                `${API_URL}/api/departments/of-user/${advisor._id}`,
+                { headers: { Authorization: `Bearer ${token}` } }
+              );
+              newMap[advisor._id] = res.data.departmentName || "Chưa có tổ";
+            } catch (err) {
+              newMap[advisor._id] = "Chưa có tổ";
+            }
+          })
+        );
+        setDepartmentNames(newMap);
+      } catch (err) {
+        const fallbackMap = advisors.reduce((acc, advisor) => {
+          acc[advisor._id] = "Chưa có tổ";
+          return acc;
+        }, {} as { [key: string]: string });
+        setDepartmentNames(fallbackMap);
+      }
     };
 
-    if (advisors.length > 0) {
-      fetchDepartments();
-    }
+    fetchDepartments();
   }, [advisors]);
 
   const handleDelete = async (_id: string) => {

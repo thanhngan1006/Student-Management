@@ -6,6 +6,7 @@ import { useNavigate } from "react-router-dom";
 import { FaEye, FaEyeSlash } from "react-icons/fa";
 
 const ChangePassword = () => {
+  const USER_SERVICE_URL = import.meta.env.VITE_USER_SERVICE_URL;
   const navigate = useNavigate();
   const [step, setStep] = useState<"verifyOld" | "resetNew">("verifyOld");
   const [oldPassword, setOldPassword] = useState("");
@@ -34,7 +35,7 @@ const ChangePassword = () => {
       // Gọi API xác thực tạm thời bằng cách thử login (hoặc qua backend change-password)
       const token = localStorage.getItem("token");
       await axios.post(
-        "http://localhost:4003/api/auth/verify-password",
+        `${USER_SERVICE_URL}/api/auth/verify-password`,
         { oldPassword },
         {
           headers: {
@@ -72,7 +73,7 @@ const ChangePassword = () => {
     try {
       const token = localStorage.getItem("token");
       await axios.post(
-        "http://localhost:4003/api/auth/change-password",
+        `${USER_SERVICE_URL}/api/auth/change-password`,
         {
           oldPassword,
           newPassword,

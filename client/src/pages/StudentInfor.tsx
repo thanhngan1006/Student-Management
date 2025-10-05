@@ -5,6 +5,9 @@ import Swal from "sweetalert2";
 import StudentList from "../components/StudentList";
 
 const StudentInfor = () => {
+  const CLASS_SERVICE_URL = import.meta.env.VITE_CLASS_SERVICE_URL;
+  const USER_SERVICE_URL = import.meta.env.VITE_USER_SERVICE_URL;
+
   const [searchTerm, setSearchTerm] = useState("");
   const [students, setStudents] = useState<any[]>([]);
   const [loading, setLoading] = useState(true);
@@ -52,7 +55,7 @@ const StudentInfor = () => {
         if (isAdvisor) {
           const advisorId = user.id || user._id;
           const classRes = await axios.get(
-            `http://localhost:4000/api/teachers/${advisorId}/class`,
+            `${CLASS_SERVICE_URL}/api/teachers/${advisorId}/class`,
             {
               headers: { Authorization: `Bearer ${token}` },
             }
@@ -64,7 +67,7 @@ const StudentInfor = () => {
           if (studentIds.length === 0) return setStudents([]);
 
           const usersRes = await axios.post(
-            `http://localhost:4003/api/users/batch`,
+            `${USER_SERVICE_URL}/api/users/batch`,
             { ids: studentIds },
             { headers: { Authorization: `Bearer ${token}` } }
           );
@@ -73,10 +76,10 @@ const StudentInfor = () => {
           setFilteredStudents(usersRes.data);
         } else if (isAdmin) {
           const [classRes, usersRes] = await Promise.all([
-            axios.get("http://localhost:4000/api/classes", {
+            axios.get(`${CLASS_SERVICE_URL}/api/classes`, {
               headers: { Authorization: `Bearer ${token}` },
             }),
-            axios.get("http://localhost:4003/api/users", {
+            axios.get(`${USER_SERVICE_URL}/api/users`, {
               headers: { Authorization: `Bearer ${token}` },
             }),
           ]);
@@ -145,7 +148,7 @@ const StudentInfor = () => {
 
     try {
       const res = await axios.post(
-        `http://localhost:4000/api/classes/${classId}/import-students`,
+        `${CLASS_SERVICE_URL}/api/classes/${classId}/import-students`,
         formData,
         {
           headers: {
@@ -176,7 +179,7 @@ const StudentInfor = () => {
       const newUserIds = updatedClass.class_member;
 
       const usersRes = await axios.post(
-        `http://localhost:4003/api/users/batch`,
+        `${USER_SERVICE_URL}/api/users/batch`,
         { ids: newUserIds },
         { headers: { Authorization: `Bearer ${token}` } }
       );
@@ -198,7 +201,7 @@ const StudentInfor = () => {
     if (isAdvisor) {
       try {
         const res = await axios.post(
-          `http://localhost:4000/api/classes/${classId}/add-student`,
+          `${CLASS_SERVICE_URL}/api/classes/${classId}/add-student`,
           { email: newStudent.email },
           { headers: { Authorization: `Bearer ${token}` } }
         );
@@ -209,7 +212,7 @@ const StudentInfor = () => {
         const updatedClass = res.data.class;
         const newUserIds = updatedClass.class_member;
         const usersRes = await axios.post(
-          `http://localhost:4003/api/users/batch`,
+          `${USER_SERVICE_URL}/api/users/batch`,
           { ids: newUserIds },
           { headers: { Authorization: `Bearer ${token}` } }
         );
@@ -245,7 +248,7 @@ const StudentInfor = () => {
       };
 
       const res = await axios.post(
-        "http://localhost:4003/api/users/add-student",
+        `${USER_SERVICE_URL}/api/users/add-student`,
         payload,
         {
           headers: { Authorization: `Bearer ${token}` },
@@ -267,36 +270,6 @@ const StudentInfor = () => {
     }
   };
 
-  // const handleDeleteStudent = async (tdt_id: string, userId: string) => {
-  //   const result = await Swal.fire({
-  //     title: "Xác nhận xoá",
-  //     text: isAdmin
-  //     ? "Bạn có chắc muốn xoá học sinh này khỏi hệ thống không?"
-  //     : "Bạn có chắc muốn xoá học sinh này khỏi lớp không?",
-  //     icon: "warning",
-  //     showCancelButton: true,
-  //     confirmButtonText: "Xoá",
-  //     cancelButtonText: "Huỷ",
-  //   });
-
-  //   if (result.isConfirmed) {
-  //     try {
-  //       await axios.delete(
-  //         `http://localhost:4000/api/classes/${classId}/remove-student/${userId}`,
-  //         {
-  //           headers: { Authorization: `Bearer ${token}` },
-  //         }
-  //       );
-
-  //       setStudents((prev) => prev.filter((s) => s.tdt_id !== tdt_id));
-  //       Swal.fire("Đã xoá!", "học sinh đã được xoá khỏi lớp.", "success");
-  //     } catch (error) {
-  //       console.error("Lỗi khi xoá học sinh khỏi lớp:", error);
-  //       Swal.fire("Lỗi", "Không thể xoá học sinh khỏi lớp.", "error");
-  //     }
-  //   }
-  // };
-
   const handleDeleteStudent = async (tdt_id: string, userId: string) => {
     const result = await Swal.fire({
       title: "Xác nhận xoá",
@@ -316,7 +289,7 @@ const StudentInfor = () => {
 
       if (isAdmin) {
         await axios.delete(
-          `http://localhost:4003/api/users/full-delete/${userId}`,
+          `${USER_SERVICE_URL}/api/users/full-delete/${userId}`,
           {
             headers: { Authorization: `Bearer ${token}` },
           }
@@ -330,7 +303,7 @@ const StudentInfor = () => {
         setStudents((prev) => prev.filter((s) => s.tdt_id !== tdt_id));
       } else if (isAdvisor) {
         await axios.delete(
-          `http://localhost:4000/api/classes/${classId}/remove-student/${userId}`,
+          `${CLASS_SERVICE_URL}/api/classes/${classId}/remove-student/${userId}`,
           {
             headers: { Authorization: `Bearer ${token}` },
           }

@@ -4,6 +4,11 @@ import { MdCheck, MdClose, MdDelete } from "react-icons/md";
 import { useParams } from "react-router-dom";
 import axios from "axios";
 
+// Định nghĩa URL từ env vars
+const USER_SERVICE_URL = import.meta.env.VITE_USER_SERVICE_URL;
+const CLASS_SERVICE_URL = import.meta.env.VITE_CLASS_SERVICE_URL;
+const DEPARTMENT_SERVICE_URL = import.meta.env.VITE_DEPARTMENT_SERVICE_URL;
+
 const TeacherDetailInDepartment = () => {
   const { teacherId } = useParams();
   const [teacher, setTeacher] = useState<any>(null);
@@ -20,7 +25,10 @@ const TeacherDetailInDepartment = () => {
     if (!teacherId) return;
 
     axios
-      .get(`http://localhost:4003/api/users/tdt/${teacherId}`)
+      .get(`${USER_SERVICE_URL}/api/users/tdt/${teacherId}`, {
+        // Thay thế
+        headers: { Authorization: `Bearer ${localStorage.getItem("token")}` },
+      })
       .then((res) => {
         setTeacher(res.data);
         setTeacherMongoId(res.data._id);
@@ -28,12 +36,18 @@ const TeacherDetailInDepartment = () => {
       .catch((err) => console.error("Lỗi khi lấy thông tin giáo viên:", err));
 
     axios
-      .get(`http://localhost:4001/api/departments/${teacherId}/subjects`)
+      .get(`${DEPARTMENT_SERVICE_URL}/api/departments/${teacherId}/subjects`, {
+        // Thay thế
+        headers: { Authorization: `Bearer ${localStorage.getItem("token")}` },
+      })
       .then((res) => setSubjects(res.data))
       .catch((err) => console.error("Lỗi khi lấy danh sách môn:", err));
 
     axios
-      .get(`http://localhost:4000/api/teacher/tdt/${teacherId}`)
+      .get(`${CLASS_SERVICE_URL}/api/teacher/tdt/${teacherId}`, {
+        // Thay thế
+        headers: { Authorization: `Bearer ${localStorage.getItem("token")}` },
+      })
       .then((res) => setTeachingClasses(res.data))
       .catch((err) =>
         console.error("Lỗi khi lấy danh sách lớp phụ trách:", err)
@@ -52,13 +66,22 @@ const TeacherDetailInDepartment = () => {
     }
 
     try {
-      await axios.put("http://localhost:4000/api/classes/add-teacher", {
-        class_id: newClassName.trim(),
-        teacher_id: teacher._id,
-      });
+      await axios.put(
+        `${CLASS_SERVICE_URL}/api/classes/add-teacher`, // Thay thế
+        {
+          class_id: newClassName.trim(),
+          teacher_id: teacher._id,
+        },
+        {
+          headers: { Authorization: `Bearer ${localStorage.getItem("token")}` },
+        }
+      );
 
       const res = await axios.get(
-        `http://localhost:4000/api/teacher/tdt/${teacherId}`
+        `${CLASS_SERVICE_URL}/api/teacher/tdt/${teacherId}`, // Thay thế
+        {
+          headers: { Authorization: `Bearer ${localStorage.getItem("token")}` },
+        }
       );
       setTeachingClasses(res.data);
 
@@ -83,14 +106,23 @@ const TeacherDetailInDepartment = () => {
 
   const handleRemoveClass = async (classId: string) => {
     try {
-      await axios.put("http://localhost:4000/api/classes/remove-teacher", {
-        class_id: classId,
-        teacher_id: teacherMongoId,
-      });
+      await axios.put(
+        `${CLASS_SERVICE_URL}/api/classes/remove-teacher`, // Thay thế
+        {
+          class_id: classId,
+          teacher_id: teacherMongoId,
+        },
+        {
+          headers: { Authorization: `Bearer ${localStorage.getItem("token")}` },
+        }
+      );
 
       // Cập nhật lại danh sách lớp sau khi xóa
       const res = await axios.get(
-        `http://localhost:4000/api/teacher/tdt/${teacherId}`
+        `${CLASS_SERVICE_URL}/api/teacher/tdt/${teacherId}`, // Thay thế
+        {
+          headers: { Authorization: `Bearer ${localStorage.getItem("token")}` },
+        }
       );
       setTeachingClasses(res.data);
 
@@ -154,12 +186,6 @@ const TeacherDetailInDepartment = () => {
                   <th className="text-left text-xs font-medium text-gray-500 uppercase tracking-wider py-3 px-4">
                     Lớp
                   </th>
-                  {/* <th className="text-left text-xs font-medium text-gray-500 uppercase tracking-wider py-3 px-4">
-                    Môn học
-                  </th>
-                  <th className="text-left text-xs font-medium text-gray-500 uppercase tracking-wider py-3 px-4">
-                    Lịch học
-                  </th> */}
                   <th className="text-center text-xs font-medium text-gray-500 uppercase tracking-wider py-3 px-4">
                     Thao tác
                   </th>
@@ -199,8 +225,6 @@ const TeacherDetailInDepartment = () => {
                 {teachingClasses.map((cls) => (
                   <tr key={cls._id}>
                     <td className="py-2 px-4">{cls.class_id}</td>
-                    {/* <td className="py-2 px-4">{cls.subject}</td>
-                    <td className="py-2 px-4">{cls.schedule}</td> */}
                     <td className="py-2 px-4 text-center">
                       <button
                         onClick={() => handleRemoveClass(cls._id)}

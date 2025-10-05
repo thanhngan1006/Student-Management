@@ -13,6 +13,8 @@ init({
 });
 
 const ResetPassword = () => {
+  const USER_SERVICE_URL = import.meta.env.VITE_USER_SERVICE_URL;
+
   const navigate = useNavigate();
   const [email, setEmail] = useState("");
   const [error, setError] = useState("");
@@ -31,11 +33,15 @@ const ResetPassword = () => {
         throw new Error("Vui lòng nhập email của bạn.");
       }
 
-      const response = await axios.post("http://localhost:4003/api/auth/send-reset-link", {
-        email: email.trim(),
-      });
-
-      setMessage(response.data.message || "Email đặt lại mật khẩu đã được gửi.");
+      const response = await axios.post(
+        `${USER_SERVICE_URL}/api/auth/send-reset-link`,
+        {
+          email: email.trim(),
+        }
+      );
+      setMessage(
+        response.data.message || "Email đặt lại mật khẩu đã được gửi."
+      );
       setTimeout(() => {
         navigate("/");
       }, 3000);
@@ -44,7 +50,7 @@ const ResetPassword = () => {
       setError(
         error.response?.data?.message || error.message || "Vui lòng thử lại sau"
       );
-    }finally {
+    } finally {
       setIsLoading(false);
     }
   };

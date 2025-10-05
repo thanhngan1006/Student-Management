@@ -20,6 +20,10 @@ interface Semester {
   semester_name: string;
 }
 
+const CLASS_SERVICE_URL = import.meta.env.VITE_CLASS_SERVICE_URL;
+const USER_SERVICE_URL = import.meta.env.VITE_USER_SERVICE_URL;
+const EDUCATION_SERVICE_URL = import.meta.env.VITE_EDUCATION_SERVICE_URL;
+
 const StudentSchedule = () => {
   const [semesters, setSemesters] = useState<Semester[]>([]);
   const [selectedSemester, setSelectedSemester] = useState<string>("");
@@ -29,7 +33,7 @@ const StudentSchedule = () => {
   const [error, setError] = useState<string | null>(null);
   const token = localStorage.getItem("token");
   const user = JSON.parse(localStorage.getItem("user") || "{}");
-  
+
   const dayMapping: { [key: string]: string } = {
     "Day 1": "Thứ 2",
     "Day 2": "Thứ 3",
@@ -39,7 +43,9 @@ const StudentSchedule = () => {
     "Day 6": "Thứ 7",
   };
 
-  const parseSemesterName = (semesterName: string): { schoolYear: string; semester: number } => {
+  const parseSemesterName = (
+    semesterName: string
+  ): { schoolYear: string; semester: number } => {
     const parts = semesterName.split(" ");
     if (parts.length !== 2) {
       throw new Error(`Invalid semester_name format: ${semesterName}`);
@@ -55,16 +61,24 @@ const StudentSchedule = () => {
   useEffect(() => {
     const fetchSemesters = async () => {
       try {
-        const classRes = await axios.get(`http://localhost:4000/api/students/${user._id}/class`, {
-          headers: { Authorization: `Bearer ${token}` },
-        });
+        const classRes = await axios.get(
+          `${CLASS_SERVICE_URL}/api/students/${user._id}/class`,
+          {
+            // Thay thế
+            headers: { Authorization: `Bearer ${token}` },
+          }
+        );
         const className = classRes.data.class.class_id;
 
-        const res = await axios.get(`http://localhost:4000/api/${className}/available-semesters`, {
-          headers: { Authorization: `Bearer ${token}` },
-        });
+        const res = await axios.get(
+          `${CLASS_SERVICE_URL}/${className}/available-semesters`,
+          {
+            // Thay thế
+            headers: { Authorization: `Bearer ${token}` },
+          }
+        );
         setSemesters(res.data.semesters);
-        
+
         if (res.data.semesters.length > 0) {
           setSelectedSemester(res.data.semesters[0]._id);
         }
@@ -87,23 +101,33 @@ const StudentSchedule = () => {
       setTeachers({});
 
       try {
-        const classRes = await axios.get(`http://localhost:4000/api/students/${user._id}/class`, {
-          headers: { Authorization: `Bearer ${token}` },
-        });
+        const classRes = await axios.get(
+          `${CLASS_SERVICE_URL}/api/students/${user._id}/class`,
+          {
+            // Thay thế
+            headers: { Authorization: `Bearer ${token}` },
+          }
+        );
         const className = classRes.data.class.class_id;
         const semester = semesters.find((s) => s._id === selectedSemester);
         if (!semester) return;
 
-        const { schoolYear, semester: semesterNumber } = parseSemesterName(semester.semester_name);
+        const { schoolYear, semester: semesterNumber } = parseSemesterName(
+          semester.semester_name
+        );
 
-        const res = await axios.get("http://localhost:4001/api/schedule/approved", {
-          params: {
-            className,
-            schoolYear,
-            semester: semesterNumber,
-          },
-          headers: { Authorization: `Bearer ${token}` },
-        });
+        const res = await axios.get(
+          `${EDUCATION_SERVICE_URL}/api/schedule/approved`,
+          {
+            // Thay thế
+            params: {
+              className,
+              schoolYear,
+              semester: semesterNumber,
+            },
+            headers: { Authorization: `Bearer ${token}` },
+          }
+        );
 
         const fetchedSchedule: Schedule = res.data.data;
         setSchedule(fetchedSchedule);
@@ -114,19 +138,25 @@ const StudentSchedule = () => {
 
         if (teacherIds.length > 0) {
           const teacherRes = await axios.post(
-            "http://localhost:4003/api/users/teachers",
+            `${USER_SERVICE_URL}/api/users/teachers`, // Thay thế
             { ids: teacherIds },
             { headers: { Authorization: `Bearer ${token}` } }
           );
-          const teacherData = teacherRes.data.reduce((acc: any, teacher: any) => {
-            acc[teacher._id] = teacher.name || "Unknown Teacher";
-            return acc;
-          }, {});
+          const teacherData = teacherRes.data.reduce(
+            (acc: any, teacher: any) => {
+              acc[teacher._id] = teacher.name || "Unknown Teacher";
+              return acc;
+            },
+            {}
+          );
           setTeachers(teacherData);
         }
       } catch (err: any) {
         console.error("Lỗi khi lấy thời khóa biểu:", err);
-        setError(err.response?.data?.message || "Đã có lỗi xảy ra khi lấy thời khóa biểu");
+        setError(
+          err.response?.data?.message ||
+            "Đã có lỗi xảy ra khi lấy thời khóa biểu"
+        );
       } finally {
         setLoading(false);
       }
@@ -172,7 +202,9 @@ const StudentSchedule = () => {
       </div>
 
       {loading ? (
-        <div className="text-center text-gray-500">Đang tải thời khóa biểu...</div>
+        <div className="text-center text-gray-500">
+          Đang tải thời khóa biểu...
+        </div>
       ) : error ? (
         <div className="text-center text-red-500">{error}</div>
       ) : schedule ? (
@@ -195,7 +227,9 @@ const StudentSchedule = () => {
                   <td className="border p-2 font-semibold">Tiết {period}</td>
                   {["Thứ 2", "Thứ 3", "Thứ 4", "Thứ 5", "Thứ 6", "Thứ 7"].map(
                     (day, index) => {
-                      const daySchedule = scheduleData.find((s) => s.day === day);
+                      const daySchedule = scheduleData.find(
+                        (s) => s.day === day
+                      );
                       const periodData = daySchedule?.periods[period - 1];
                       return (
                         <td key={index} className="border p-2">
@@ -205,7 +239,8 @@ const StudentSchedule = () => {
                                 {periodData.subject}
                               </div>
                               <div className="text-sm text-gray-600">
-                                GV: {teachers[periodData.teacher_id] || "Unknown"}
+                                GV:{" "}
+                                {teachers[periodData.teacher_id] || "Unknown"}
                               </div>
                             </div>
                           ) : (

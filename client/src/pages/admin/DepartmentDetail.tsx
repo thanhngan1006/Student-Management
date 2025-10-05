@@ -4,6 +4,9 @@ import { IoInformationCircle } from "react-icons/io5";
 import { MdDelete } from "react-icons/md";
 import { useParams, useNavigate } from "react-router-dom";
 
+// Định nghĩa URL từ env vars
+const DEPARTMENT_SERVICE_URL = import.meta.env.VITE_EDUCATION_SERVICE_URL;
+
 const DepartmentDetail = () => {
   const { departmentId } = useParams();
   const navigate = useNavigate();
@@ -22,7 +25,10 @@ const DepartmentDetail = () => {
     setLoading(true);
 
     axios
-      .get(`http://localhost:4001/api/departments/${departmentId}`)
+      .get(`${DEPARTMENT_SERVICE_URL}/api/departments/${departmentId}`, {
+        // Thay thế
+        headers: { Authorization: `Bearer ${localStorage.getItem("token")}` },
+      })
       .then((res) => {
         setDepartmentInfo(res.data);
       })
@@ -42,10 +48,13 @@ const DepartmentDetail = () => {
 
     try {
       await axios.post(
-        `http://localhost:4001/api/departments/${departmentId}/add-teacher`,
+        `${DEPARTMENT_SERVICE_URL}/api/departments/${departmentId}/add-teacher`, // Thay thế
         {
           email: newTeacherInfo.email.trim(),
           subject_id: newTeacherInfo.subject,
+        },
+        {
+          headers: { Authorization: `Bearer ${localStorage.getItem("token")}` },
         }
       );
 
@@ -53,7 +62,10 @@ const DepartmentDetail = () => {
 
       // Sau khi thêm xong, load lại dữ liệu tổ
       const res = await axios.get(
-        `http://localhost:4001/api/departments/${departmentId}`
+        `${DEPARTMENT_SERVICE_URL}/api/departments/${departmentId}`, // Thay thế
+        {
+          headers: { Authorization: `Bearer ${localStorage.getItem("token")}` },
+        }
       );
       setDepartmentInfo(res.data);
 
@@ -68,15 +80,20 @@ const DepartmentDetail = () => {
   const handleRemoveTeacher = async (teacherId: string, subjectId: string) => {
     try {
       await axios.delete(
-        `http://localhost:4001/api/departments/${departmentId}/subjects/${subjectId}/users/${teacherId}`,
-        {}
+        `${DEPARTMENT_SERVICE_URL}/api/departments/${departmentId}/subjects/${subjectId}/users/${teacherId}`, // Thay thế
+        {
+          headers: { Authorization: `Bearer ${localStorage.getItem("token")}` },
+        }
       );
 
       alert("Xóa giáo viên thành công!");
 
       // Reload dữ liệu tổ
       const res = await axios.get(
-        `http://localhost:4001/api/departments/${departmentId}`
+        `${DEPARTMENT_SERVICE_URL}/api/departments/${departmentId}`, // Thay thế
+        {
+          headers: { Authorization: `Bearer ${localStorage.getItem("token")}` },
+        }
       );
       setDepartmentInfo(res.data);
     } catch (err: any) {

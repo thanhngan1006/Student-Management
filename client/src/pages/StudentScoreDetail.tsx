@@ -3,6 +3,10 @@ import { useEffect, useState } from "react";
 import { useParams } from "react-router-dom";
 
 const StudentScoreDetail = () => {
+  const USER_URL = import.meta.env.VITE_USER_SERVICE_URL;
+  const CLASS_URL = import.meta.env.VITE_CLASS_SERVICE_URL;
+  const SCORE_URL = import.meta.env.VITE_SCORE_SERVICE_URL;
+
   const { studentId } = useParams();
   const token = localStorage.getItem("token");
   const [studentInfo, setStudentInfo] = useState<any>(null);
@@ -21,7 +25,7 @@ const StudentScoreDetail = () => {
 
       try {
         const userRes = await axios.get(
-          `http://localhost:4003/api/users/tdt/${studentId}`,
+          `${USER_URL}/api/users/tdt/${studentId}`,
           {
             headers: { Authorization: `Bearer ${token}` },
           }
@@ -29,7 +33,7 @@ const StudentScoreDetail = () => {
         const stid = userRes.data._id;
 
         const classRes = await axios.get(
-          `http://localhost:4000/api/students/${stid}/class`,
+          `${CLASS_URL}/api/students/${stid}/class`,
           {
             headers: { Authorization: `Bearer ${token}` },
           }
@@ -38,15 +42,8 @@ const StudentScoreDetail = () => {
         setStudentInfo(userRes.data);
         setClassId(classId);
 
-        // const scoreGroupedRes = await axios.get(
-        //   `http://localhost:4002/api/students/${userRes.data._id}/scores-by-semester`,
-        //   {
-        //     headers: { Authorization: `Bearer ${token}` },
-        //   }
-        // );
-
         const semesterRes = await axios.get(
-          `http://localhost:4000/api/${classId}/available-semesters`,
+          `${CLASS_URL}/api/${classId}/available-semesters`,
           {
             headers: { Authorization: `Bearer ${token}` },
           }
@@ -91,7 +88,7 @@ const StudentScoreDetail = () => {
       setStatus("");
       try {
         const res = await axios.get(
-          `http://localhost:4002/api/students/${studentInfo._id}/scores?semester_id=${selectedSemesterId}`,
+          `${SCORE_URL}/api/students/${studentInfo._id}/scores?semester_id=${selectedSemesterId}`,
           {
             headers: { Authorization: `Bearer ${token}` },
           }
@@ -128,7 +125,7 @@ const StudentScoreDetail = () => {
     }
     try {
       await axios.put(
-        `http://localhost:4002/api/students/scores/update`,
+        `${SCORE_URL}/api/students/scores/update`,
         {
           user_id: studentInfo._id,
           subject_id: editingSubject.subject_id,
@@ -143,7 +140,7 @@ const StudentScoreDetail = () => {
       setEditingSubject(null);
 
       const res = await axios.get(
-        `http://localhost:4002/api/students/${studentInfo._id}/scores?semester_id=${selectedSemesterId}`,
+        `${SCORE_URL}/api/students/${studentInfo._id}/scores?semester_id=${selectedSemesterId}`,
         {
           headers: { Authorization: `Bearer ${token}` },
         }

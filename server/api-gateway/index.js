@@ -41,6 +41,9 @@ const express = require("express");
 const { createProxyMiddleware } = require("http-proxy-middleware");
 require("dotenv").config(); // Thêm dòng này để đọc biến môi trường
 const app = express();
+const cors = require("cors");
+
+app.use(cors());
 
 app.use((req, res, next) => {
   next();
@@ -49,7 +52,7 @@ app.use((req, res, next) => {
 app.use(
   "/class",
   createProxyMiddleware({
-    target: process.env.CLASS_SERVICE_URL,
+    target: process.env.VITE_CLASS_SERVICE_URL,
     changeOrigin: true,
     logLevel: "debug",
   })
@@ -57,7 +60,7 @@ app.use(
 app.use(
   "/education",
   createProxyMiddleware({
-    target: process.env.EDUCATION_SERVICE_URL,
+    target: process.env.VITE_EDUCATION_SERVICE_URL,
     changeOrigin: true,
     logLevel: "debug",
   })
@@ -65,7 +68,7 @@ app.use(
 app.use(
   "/score",
   createProxyMiddleware({
-    target: process.env.SCORE_SERVICE_URL,
+    target: process.env.VITE_SCORE_SERVICE_URL,
     changeOrigin: true,
     logLevel: "debug",
   })
@@ -73,7 +76,7 @@ app.use(
 app.use(
   "/user",
   createProxyMiddleware({
-    target: process.env.USER_SERVICE_URL,
+    target: process.env.VITE_USER_SERVICE_URL,
     changeOrigin: true,
     logLevel: "debug",
   })
@@ -81,7 +84,7 @@ app.use(
 app.use(
   "/forum",
   createProxyMiddleware({
-    target: process.env.FORUM_SERVICE_URL,
+    target: process.env.VITE_FORUM_SERVICE_URL,
     changeOrigin: true,
     logLevel: "debug",
   })

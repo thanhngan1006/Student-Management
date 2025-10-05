@@ -6,6 +6,8 @@ import Swal from "sweetalert2";
 import { UpdateUserData } from "../types/updateUser";
 
 const Profile = () => {
+  const USER_SERVICE_URL = import.meta.env.VITE_USER_SERVICE_URL;
+
   const navigate = useNavigate();
   const user = JSON.parse(localStorage.getItem("user") || "{}");
   const tdt_id = user.tdt_id;
@@ -21,7 +23,7 @@ const Profile = () => {
     const fetchUser = async () => {
       try {
         const res = await axios.get(
-          `http://localhost:4003/api/users/tdt/${tdt_id}`,
+          `${USER_SERVICE_URL}/api/users/tdt/${tdt_id}`,
           {
             headers: {
               Authorization: `Bearer ${token}`,
@@ -91,7 +93,7 @@ const Profile = () => {
       });
       if (!confirmResult.isConfirmed) return;
       const response = await axios.put(
-        `http://localhost:4003/api/users/${userDetail._id}`,
+        `${USER_SERVICE_URL}/api/users/${userDetail._id}`,
         updateData,
         {
           headers: {
@@ -100,7 +102,6 @@ const Profile = () => {
           },
         }
       );
-
       if (response.status === 200) {
         const updatedUserData = {
           ...userDetail,

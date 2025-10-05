@@ -2,6 +2,10 @@ import axios from "axios";
 import { useEffect, useState } from "react";
 import { useParams } from "react-router-dom";
 
+const USER_SERVICE_URL = import.meta.env.VITE_USER_SERVICE_URL;
+const CLASS_SERVICE_URL = import.meta.env.VITE_CLASS_SERVICE_URL;
+const SCORE_SERVICE_URL = import.meta.env.VITE_SCORE_SERVICE_URL;
+
 const SubjectTeacherScoreDetail = () => {
   const { classId, studentId } = useParams();
   const token = localStorage.getItem("token");
@@ -21,7 +25,7 @@ const SubjectTeacherScoreDetail = () => {
 
       try {
         const userRes = await axios.get(
-          `http://localhost:4003/api/users/tdt/${studentId}`,
+          `${USER_SERVICE_URL}/api/users/tdt/${studentId}`, // Thay thế
           {
             headers: { Authorization: `Bearer ${token}` },
           }
@@ -29,7 +33,7 @@ const SubjectTeacherScoreDetail = () => {
         setStudentInfo(userRes.data);
 
         const semesterRes = await axios.get(
-          `http://localhost:4000/api/${classId}/available-semesters`,
+          `${CLASS_SERVICE_URL}/${classId}/available-semesters`, // Thay thế
           {
             headers: { Authorization: `Bearer ${token}` },
           }
@@ -42,26 +46,6 @@ const SubjectTeacherScoreDetail = () => {
           })
         );
         setSemesters(formattedSemesters);
-
-        // const scoreGroupedRes = await axios.get(
-        //   `http://localhost:4002/api/students/${userRes.data._id}/scores-by-semester`,
-        //   {
-        //     headers: { Authorization: `Bearer ${token}` },
-        //   }
-        // );
-
-        // const grouped = scoreGroupedRes.data as Record<
-        //   string,
-        //   { name: string }
-        // >;
-        // const formatted = Object.entries(grouped).map(([id, { name }]) => ({
-        //   id,
-        //   name,
-        // }));
-        // setSemesters(formatted);
-        // if (formatted.length > 0) {
-        //   setSelectedSemesterId(formatted[0].id);
-        // }
       } catch (err) {
         console.error("Lỗi khi tải thông tin:", err);
       }
@@ -78,7 +62,7 @@ const SubjectTeacherScoreDetail = () => {
 
       try {
         const res = await axios.get(
-          `http://localhost:4002/api/students/scores/${studentInfo._id}/by-teacher/${teacherId}?semester_id=${selectedSemesterId}`,
+          `${SCORE_SERVICE_URL}/api/students/scores/${studentInfo._id}/by-teacher/${teacherId}?semester_id=${selectedSemesterId}`, // Thay thế
           {
             headers: { Authorization: `Bearer ${token}` },
           }
@@ -131,7 +115,7 @@ const SubjectTeacherScoreDetail = () => {
 
     try {
       await axios.put(
-        `http://localhost:4002/api/students/scores/update`,
+        `${SCORE_SERVICE_URL}/api/students/scores/update`, // Thay thế
         {
           user_id: studentInfo._id,
           subject_id: editingSubject.subject_id,
@@ -146,7 +130,7 @@ const SubjectTeacherScoreDetail = () => {
       setEditingSubject(null);
 
       const res = await axios.get(
-        `http://localhost:4002/api/students/scores/${studentInfo._id}/by-teacher/${teacherId}?semester_id=${selectedSemesterId}`,
+        `${SCORE_SERVICE_URL}/api/students/scores/${studentInfo._id}/by-teacher/${teacherId}?semester_id=${selectedSemesterId}`, // Thay thế
         {
           headers: { Authorization: `Bearer ${token}` },
         }

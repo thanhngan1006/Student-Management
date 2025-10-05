@@ -24,6 +24,8 @@ interface Semester {
   semester_name: string;
 }
 
+const EDUCATION_SERVICE_URL = import.meta.env.VITE_EDUCATION_SERVICE_URL;
+
 const TeacherSchedule = () => {
   const [semesters, setSemesters] = useState<Semester[]>([]);
   const [selectedSemester, setSelectedSemester] = useState<string>("");
@@ -52,7 +54,7 @@ const TeacherSchedule = () => {
   useEffect(() => {
     const fetchSemesters = async () => {
       try {
-        const res = await axios.get("http://localhost:4001/api/semesters", {
+        const res = await axios.get(`${EDUCATION_SERVICE_URL}/api/semesters`, {
           headers: { Authorization: `Bearer ${token}` },
         });
         setSemesters(res.data);
@@ -85,7 +87,7 @@ const TeacherSchedule = () => {
         );
 
         const res = await axios.get(
-          "http://localhost:4001/api/schedule/teacher",
+          `${EDUCATION_SERVICE_URL}/api/schedule/teacher`,
           {
             params: {
               teacherId: user._id,

@@ -5,6 +5,9 @@ import Swal from "sweetalert2";
 import { PostType } from "../types/post";
 
 const Forum = () => {
+  const CLASS_SERVICE_URL = import.meta.env.VITE_CLASS_SERVICE_URL;
+  const FORUM_SERVICE_URL = import.meta.env.VITE_FORUM_SERVICE_URL;
+
   const storedUser = JSON.parse(localStorage.getItem("user") || "{}");
   const token = localStorage.getItem("token");
   const user = JSON.parse(localStorage.getItem("user") || "{}");
@@ -21,12 +24,12 @@ const Forum = () => {
     try {
       if (storedUser.role === "student") {
         const res = await axios.get(
-          `http://localhost:4000/api/students/${storedUser._id}/class`
+          `${CLASS_SERVICE_URL}/api/students/${storedUser._id}/class`
         );
         return res.data?.class?.class_id;
       } else if (storedUser.role === "advisor") {
         const res = await axios.get(
-          `http://localhost:4000/api/teachers/${storedUser._id}/class`
+          `${CLASS_SERVICE_URL}/api/teachers/${storedUser._id}/class`
         );
         return res.data?.class?.class_id;
       }
@@ -46,7 +49,7 @@ const Forum = () => {
       }
 
       const postRes = await axios.get(
-        `http://localhost:4004/api/class/${classId}/posts`
+        `${FORUM_SERVICE_URL}/api/class/${classId}/posts`
       );
       setPosts(postRes.data);
     } catch (err) {
@@ -65,7 +68,7 @@ const Forum = () => {
 
     try {
       await axios.post(
-        "http://localhost:4004/api/posts",
+        `${FORUM_SERVICE_URL}/api/posts`,
         {
           author_id,
           author_name: storedUser.name,
@@ -86,7 +89,7 @@ const Forum = () => {
   const toggleLike = async (postId: string) => {
     try {
       await axios.post(
-        `http://localhost:4004/api/posts/${postId}/like`,
+        `${FORUM_SERVICE_URL}/api/posts/${postId}/like`,
         { user_id: storedUser._id },
         {
           headers: { Authorization: `Bearer ${token}` },
@@ -102,7 +105,7 @@ const Forum = () => {
     if (!commentContent.trim()) return;
     try {
       await axios.post(
-        `http://localhost:4004/api/posts/${postId}/comments`,
+        `${FORUM_SERVICE_URL}/api/posts/${postId}/comments`,
         {
           author_id: storedUser._id,
           author_name: storedUser.name,
@@ -132,7 +135,7 @@ const Forum = () => {
 
     if (result.isConfirmed) {
       try {
-        await axios.delete(`http://localhost:4004/api/posts/${postId}`, {
+        await axios.delete(`${FORUM_SERVICE_URL}/api/posts/${postId}`, {
           headers: { Authorization: `Bearer ${token}` },
         });
 

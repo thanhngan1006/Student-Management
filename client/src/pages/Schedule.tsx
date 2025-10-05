@@ -2,6 +2,9 @@ import axios from "axios";
 import { useEffect, useState } from "react";
 
 const Schedule = () => {
+  const EDUCATION_SERVICE_URL = import.meta.env.VITE_EDUCATION_SERVICE_URL;
+  const USER_SERVICE_URL = import.meta.env.VITE_USER_SERVICE_URL;
+
   const [semesters, setSemesters] = useState<any[]>([]);
   const [selectedSemester, setSelectedSemester] = useState<string>("");
   const [versions, setVersions] = useState<
@@ -25,7 +28,7 @@ const Schedule = () => {
   useEffect(() => {
     const fetchSemesters = async () => {
       try {
-        const res = await axios.get("http://localhost:4001/api/semesters", {
+        const res = await axios.get(`${EDUCATION_SERVICE_URL}/api/semesters`, {
           headers: { Authorization: `Bearer ${token}` },
         });
         setSemesters(res.data);
@@ -66,7 +69,7 @@ const Schedule = () => {
       );
 
       const res = await axios.get(
-        "http://localhost:4001/api/schedule/version",
+        `${EDUCATION_SERVICE_URL}/api/schedule/version`,
         {
           params: {
             schoolYear: schoolYear,
@@ -75,7 +78,6 @@ const Schedule = () => {
           headers: { Authorization: `Bearer ${token}` },
         }
       );
-
       const fetchedVersions = res.data.data || [];
       setVersions(fetchedVersions);
       setSelectedVersion(
@@ -100,7 +102,7 @@ const Schedule = () => {
       );
 
       const res = await axios.get(
-        "http://localhost:4001/api/schedule/schedules",
+        `${EDUCATION_SERVICE_URL}/api/schedule/schedules`,
         {
           params: {
             schoolYear: schoolYear,
@@ -126,7 +128,7 @@ const Schedule = () => {
 
       if (teacherIds.length > 0) {
         const teacherRes = await axios.post(
-          "http://localhost:4003/api/users/teachers",
+          `${USER_SERVICE_URL}/api/users/teachers`,
           { ids: teacherIds },
           { headers: { Authorization: `Bearer ${token}` } }
         );
@@ -175,7 +177,7 @@ const Schedule = () => {
       );
 
       const response = await axios.post(
-        "http://localhost:4001/api/schedule/generate-schedule",
+        `${EDUCATION_SERVICE_URL}/api/schedule/generate-schedule`,
         {
           schoolYear: schoolYear,
           semester: semesterNumber,
@@ -214,7 +216,7 @@ const Schedule = () => {
       );
 
       const response = await axios.post(
-        "http://localhost:4001/api/schedule/approve",
+        `${EDUCATION_SERVICE_URL}/api/schedule/approve`,
         {
           schoolYear: schoolYear,
           semester: semesterNumber,
@@ -227,7 +229,6 @@ const Schedule = () => {
           },
         }
       );
-
       alert(response.data.message);
       await fetchVersions();
       await fetchSchedules();
@@ -251,7 +252,7 @@ const Schedule = () => {
       );
 
       const response = await axios.post(
-        "http://localhost:4001/api/schedule/unapprove",
+        `${EDUCATION_SERVICE_URL}/api/schedule/unapprove`,
         {
           schoolYear: schoolYear,
           semester: semesterNumber,
