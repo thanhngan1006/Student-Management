@@ -78,7 +78,7 @@ const TeacherDashboard: React.FC = () => {
           throw new Error("Không tìm thấy token. Vui lòng đăng nhập lại.");
         }
         const response = await axios.get<string[]>(
-          `${EDUCATION_SERVICE_URL}/api/semesters/school-years`, // Thay thế
+          `${EDUCATION_SERVICE_URL}/api/semesters/school-years`,
           {
             headers: { Authorization: `Bearer ${token}` },
           }

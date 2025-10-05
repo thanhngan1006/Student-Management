@@ -7,7 +7,7 @@ import axios from "axios";
 // Định nghĩa URL từ env vars
 const USER_SERVICE_URL = import.meta.env.VITE_USER_SERVICE_URL;
 const CLASS_SERVICE_URL = import.meta.env.VITE_CLASS_SERVICE_URL;
-const DEPARTMENT_SERVICE_URL = import.meta.env.VITE_DEPARTMENT_SERVICE_URL;
+const DEPARTMENT_SERVICE_URL = import.meta.env.VITE_EDUCATION_SERVICE_URL;
 
 const TeacherDetailInDepartment = () => {
   const { teacherId } = useParams();
