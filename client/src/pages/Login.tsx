@@ -6,6 +6,8 @@ import { FaEye, FaEyeSlash } from "react-icons/fa";
 import axios from "axios";
 
 const Login = () => {
+  const API_URL = process.env.REACT_APP_API_GATEWAY_URL;
+
   const navigate = useNavigate();
   const [formData, setFormData] = useState({
     username: "52200066",
@@ -26,10 +28,7 @@ const Login = () => {
     setError("");
 
     try {
-      const res = await axios.post(
-        "http://localhost:4003/api/auth/login",
-        formData
-      );
+      const res = await axios.post(`${API_URL}/api/auth/login`, formData);
       const { token, user } = res.data;
 
       // Lưu vào localStorage
